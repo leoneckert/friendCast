@@ -1,0 +1,24 @@
+{
+  "name": "Through the news",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "",
+  "browser_action": {
+    "default_popup": "popup.html"
+  },  
+  "permissions": [
+    "tabs", 
+    "http://*/*", 
+    "https://*/*",
+    "storage"
+  ],
+  "content_scripts": [
+        {
+          "matches": ["http://*/*", "https://*/*"],
+          "js": ["inject.js"]
+        }
+  ],
+  "web_accessible_resources": [
+      "manifest.json"
+  ]
+}
