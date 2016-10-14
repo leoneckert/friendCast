@@ -1,18 +1,15 @@
 {
-  "name": "through-the-browser",
+  "name": "peerserver-through-their-pages",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "brfs": "^1.4.3",
-    "browserify": "^13.1.0",
-    "browserify-fs": "^1.0.0",
     "fs": "0.0.1-security",
-    "https-browserify": "0.0.1"
+    "peer": "^0.2.8"
   }
 }

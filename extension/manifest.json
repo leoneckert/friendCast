@@ -12,11 +12,10 @@
     "https://*/*",
     "storage"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [
         {
           "matches": ["http://*/*", "https://*/*"],
-          "js": ["inject.js"]
+          "js": ["peer.js", "inject.js"]
         }
   ],
   "web_accessible_resources": [
