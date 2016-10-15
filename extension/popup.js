@@ -12,6 +12,9 @@ function start(myID, username){
         }
         xmlhttp.send(JSON.stringify(toSend));
     }
+
+    /////////////////////////// RUTIME ///////////////////////////
+
     // At this point, both ID and username are available, 
     // and a request function created to authenticate to the server.
     toServer("hello");
@@ -19,30 +22,6 @@ function start(myID, username){
     
 
     
-
-    // chrome.tabs.query({}, function(tabs) {
-    //     for (var i=0; i<tabs.length; i++) {
-    //         chrome.tabs.sendMessage(tabs[i].id, "some message");
-    //     }
-    // });
-
-    // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    
-    //     for (var i=0; i<tabs.length; i++) {
-    //         // chrome.tabs.sendMessage(tabs[i].id, "some message");
-
-    //         chrome.tabs.sendMessage(tabs[i].id, {greeting: "hello"}, function(response) {
-    //             console.log(response.farewell);
-    //         });
-    //     }
-    // });
-
-
-    // getID(function(myID){
-    //     console.log("in getID() with an ID available:", myID);
-
-    // });
-
     
 
 }
@@ -57,7 +36,11 @@ function renderPopup(uname){
     var welcome = document.createElement("h3");
     welcome.innerHTML = "Hello, " + uname + "!";
     document.body.appendChild(welcome);
+
+
+
 }
+
 
 
 
@@ -71,7 +54,6 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
 }
-
 
 function checkForValue(value, callback){
     chrome.storage.local.get(value, function (items){
@@ -100,12 +82,8 @@ function unameAvailable(uname, callback){
     xmlhttp.send(JSON.stringify(toSend));
 }
 
-function saveUnameInBrowser(uname){
-    chrome.storage.local.set({'username': uname});
-}
-
 function userNameUnavailable(uname){
-    document.getElementById("uname_taken_notification").innerHTML = "The username <b>" + uname + "</b> is unavailable. Please try another one.";
+    document.getElementById("uname_taken_notification").innerHTML = "Please try another username.<br>'<b>" + uname + "</b>' is either <b>taken</b> or contains <b>forbidden characters</b>.";
 }
 
 function letSelectUsername(myID){
@@ -117,7 +95,7 @@ function letSelectUsername(myID){
         unameAvailable(nameChosen, function(available){
             if(available){
                 console.log("username available for", myID);
-                saveUnameInBrowser(nameChosen);
+                chrome.storage.local.set({"username": nameChosen});
                 start(myID, nameChosen);
             }else if (!available){
                 console.log("username NOT available for", myID);
