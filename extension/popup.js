@@ -1,32 +1,21 @@
-window.addEventListener("load", init(function(myID, username){
+function start(myID, username){
 
     function toServer(postkey, data, callback){   
         var xmlhttp = new XMLHttpRequest();       
         xmlhttp.open("POST", "http://104.236.30.108:8000/"+postkey, true);
-        var toSend = {"id":myID, "data":data};
+        var toSend = {"id":myID, "username": username, "data":data};
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.onreadystatechange = function() {//Call a function when the state changes.
-            if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200 && callback) {
                 callback(xmlhttp.responseText);
             }
         }
         xmlhttp.send(JSON.stringify(toSend));
     }
-
-
-    toServer("hello", {}, function(_){ // makes sure the ID is on the server
-        
-        if(username === ""){
-            letSelectUsername(function(chosenName){
-                console.log("USER wants to be known as", chosenName);
-                toServer("username_req", {"uname":chosenName}, function(resp){
-                    
-                });
-            });  
-        }
-
-    });  
-
+    // At this point, both ID and username are available, 
+    // and a request function created to authenticate to the server.
+    toServer("hello");
+    renderPopup(username);
     
 
     
@@ -56,11 +45,19 @@ window.addEventListener("load", init(function(myID, username){
 
     
 
-}));
+}
 
 
 
 
+function renderPopup(uname){
+    var usernamewrapper = document.getElementById("usernameWrapper");
+    usernamewrapper.innerHTML = "";
+    usernamewrapper.style = "display:none";
+    var welcome = document.createElement("h3");
+    welcome.innerHTML = "Hello, " + uname + "!";
+    document.body.appendChild(welcome);
+}
 
 
 
@@ -86,17 +83,52 @@ function checkForValue(value, callback){
     }); 
 }
 
-function letSelectUsername(callback){
+function unameAvailable(uname, callback){   
+    var xmlhttp = new XMLHttpRequest();       
+    xmlhttp.open("POST", "http://104.236.30.108:8000/unameRequest", true);
+    var toSend = {"unameRequested":uname};
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.onreadystatechange = function() {//Call a function when the state changes.
+        if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            if(xmlhttp.responseText === "available"){
+                callback(true);
+            }else if(xmlhttp.responseText === "unavailable"){
+                callback(false);
+            }
+        }
+    }
+    xmlhttp.send(JSON.stringify(toSend));
+}
+
+function saveUnameInBrowser(uname){
+    chrome.storage.local.set({'username': uname});
+}
+
+function userNameUnavailable(uname){
+    document.getElementById("uname_taken_notification").innerHTML = "The username <b>" + uname + "</b> is unavailable. Please try another one.";
+}
+
+function letSelectUsername(myID){
+    console.log("in letSelectUsername");
     var usernamewrapper = document.getElementById("usernameWrapper");
     usernamewrapper.style = "display:block";
     document.getElementById("usernameSubmit").addEventListener('click', function(){
         var nameChosen = document.getElementById("usernameText").value;
-        callback(nameChosen);
+        unameAvailable(nameChosen, function(available){
+            if(available){
+                console.log("username available for", myID);
+                saveUnameInBrowser(nameChosen);
+                start(myID, nameChosen);
+            }else if (!available){
+                console.log("username NOT available for", myID);
+                userNameUnavailable(nameChosen);
+            }
+        });
     })
 }
 
 // previously getID()
-function init(callback){
+function init(){
     checkForValue('uniqueKey', function(ID){
         var myID;
         if(!ID){
@@ -105,13 +137,18 @@ function init(callback){
         }else{
             myID = ID;
         }
+
         checkForValue('username', function(uname){
-            var username = "";
-            if(uname){
+            if(!uname){
+                letSelectUsername(myID);
+            }else if(uname){
                 username = uname;
+                start(myID, uname);
             }
-            // letSelectUsername();
-            callback(myID, username);
         });
+
+
     });
 }
+
+window.addEventListener("load", init);
