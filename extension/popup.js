@@ -30,14 +30,38 @@ function start(myID, username){
 
 
 function renderPopup(uname){
+    // hide username picker
     var usernamewrapper = document.getElementById("usernameWrapper");
     usernamewrapper.innerHTML = "";
     usernamewrapper.style = "display:none";
+    
+    // include welcome
     var welcome = document.createElement("h3");
     welcome.innerHTML = "Hello, " + uname + "!";
     document.body.appendChild(welcome);
 
+    //friend adder
+    var newFriendsWrapper = document.createElement("div");
+    newFriendsWrapper.id = "newFriendsWrapper";
 
+    var friendText = document.createElement("input");
+    friendText.type = "text";
+    friendText.value = "Add a friend.";
+    friendText.id = "friendText";
+    newFriendsWrapper.appendChild(friendText);
+    
+    var friendSubmit = document.createElement("input");
+    friendSubmit.type = "button";
+    friendSubmit.value = "Add friend";
+    friendSubmit.id = "friendSubmit";
+    newFriendsWrapper.appendChild(friendSubmit);
+    
+    var friendNotExistNotification = document.createElement("p");
+    friendNotExistNotification.id = "friend_not_exist_notification";
+    newFriendsWrapper.appendChild(friendNotExistNotification);
+    document.body.appendChild(newFriendsWrapper);
+    
+    
 
 }
 
