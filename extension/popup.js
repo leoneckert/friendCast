@@ -18,7 +18,7 @@ function start(myID, username){
     }
 
     function addFriend(){
-        console.log(pending);
+        // console.log(pending);
         var friendToAdd = document.getElementById("friendText").value;
         console.log(username,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
@@ -26,7 +26,7 @@ function start(myID, username){
             if(res["status"] === "pending"){
                 friends["pending"].push(friendToAdd);
             }else if(res["status"] === "friends"){
-                friends["pending"]["confirmed"][friendToAdd] = res["friendID"];
+                friends["confirmed"][friendToAdd] = res["friendID"];
                 // confirmed.push(friendToAdd);
             }
             console.log("ADDED FRIEND")
