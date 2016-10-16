@@ -18,7 +18,7 @@ function start(myID, username){
     }
 
     function addFriend(){
-        // console.log(pending);
+        document.getElementById("friend_not_exist_notification").innerHTML = "";
         var friendToAdd = document.getElementById("friendText").value;
         console.log(username,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
@@ -27,7 +27,8 @@ function start(myID, username){
                 friends["pending"].push(friendToAdd);
             }else if(res["status"] === "friends"){
                 friends["confirmed"][friendToAdd] = res["friendID"];
-                // confirmed.push(friendToAdd);
+            }else if(res["status"] === "unavailable"){
+                document.getElementById("friend_not_exist_notification").innerHTML = "<b>"+friendToAdd+"</b> could not be found.";
             }
             console.log("ADDED FRIEND")
             console.dir(friends)

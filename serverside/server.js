@@ -149,7 +149,8 @@ app.post('/addfriend', function (req, res) {
         }
         
     }else{
-        res.end("unavailable");
+        var reply = {"status": "unavailable"};
+        res.end(JSON.stringify(reply));
     }
     console.log("USERS\n\t", util.inspect(users, false, null))
 });
