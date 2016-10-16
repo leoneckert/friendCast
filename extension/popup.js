@@ -37,6 +37,18 @@ function start(myID, username){
         })
     }
 
+    function sendStream(uname) {   
+        chrome.tabs.getAllInWindow(null, function(tabs){
+            for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {uname: "hello", id: });                         
+            }
+        });  
+    }
+    // document.getElementById("test").addEventListener('click', testRequest);
+
+
+
+
     function renderPopup(){
         document.body.innerHTML = "";
         
@@ -55,7 +67,7 @@ function start(myID, username){
             confirmedFriends.id = "confirmedFriends";
             confirmedFriends.innerHTML = "<p><b>Your friends:</b></p>";
             for(var i = 0; i < confirmed.length; i++){
-                confirmedFriends.innerHTML += "<p> >> "+confirmed[i]+" <a href=#>go live</a></p> ";
+                confirmedFriends.innerHTML += "<p> >> "+confirmed[i]+" <a href='#' onCLick=\"alert('Hello!')\"">go live</a></p> ";
             }
             friendsWrapper.appendChild(confirmedFriends);
         }
@@ -182,47 +194,25 @@ function letSelectUsername(myID){
 // previously getID()
 function init(){
 
-    function testRequest() {   
-        console.log(chrome.tabs);
-        // for(var i = 0; i < chrome.tabs.length; i++){
-        //     chrome.tabs[i](null, function(tab) {
-        //         chrome.tabs.sendMessage(tab.id, {greeting: "hello"});
-        //     });  
-
-        // }     
-
-        chrome.tabs.getAllInWindow(null, function(tabs){
-            for (var i = 0; i < tabs.length; i++) {
-            chrome.tabs.sendMessage(tabs[i].id, {greeting: "hello"});                         
+    checkForValue('friendCastID', function(ID){
+        var myID;
+        if(!ID){
+            myID = guid();
+            chrome.storage.local.set({'friendCastID': myID});
+        }else{
+            myID = ID;
+        }
+        checkForValue('friendCastUsername', function(uname){
+            if(!uname){
+                letSelectUsername(myID);
+            }else if(uname){
+                username = uname;
+                start(myID, uname);
             }
         });
-        // chrome.tabs.getSelected(null, function(tab) {
-        //     chrome.tabs.sendMessage(tab.id, {greeting: "hello"});
-        // });    
-    }
-    document.getElementById("test").addEventListener('click', testRequest);
 
 
-
-    // checkForValue('friendCastID', function(ID){
-    //     var myID;
-    //     if(!ID){
-    //         myID = guid();
-    //         chrome.storage.local.set({'friendCastID': myID});
-    //     }else{
-    //         myID = ID;
-    //     }
-    //     checkForValue('friendCastUsername', function(uname){
-    //         if(!uname){
-    //             letSelectUsername(myID);
-    //         }else if(uname){
-    //             username = uname;
-    //             start(myID, uname);
-    //         }
-    //     });
-
-
-    // });
+    });
 }
 
 window.addEventListener("load", init);
