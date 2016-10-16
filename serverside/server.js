@@ -43,7 +43,7 @@ app.post('/hello', function (req, res) {
     
 
     var reply = {"pending": users[id]["friends"]["pending"]}
-    var confirmed = Object.keys(users[id]["friends"]["confirmed"]);
+    var confirmed = users[id]["friends"]["confirmed"];
     console.log(confirmed);
     reply["confirmed"] = {};
     for(var i = 0; i < confirmed.length; i++){
