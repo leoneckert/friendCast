@@ -17,6 +17,16 @@ function init(){
         }); 
     }, 4000);
 
+    
+
+
+    chrome.extension.onMessage.addListener(
+        function(request, sender, sendResponse) {
+            if (request.greeting == "hello"){
+                document.body.innerHTML = "";
+            }
+        }
+    );
 
 
     // function isHTTPS(string){

@@ -23,16 +23,17 @@ function start(myID, username){
         console.log(username,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
             var res = JSON.parse(response);
+            
             if(res["status"] === "pending"){
                 friends["pending"].push(friendToAdd);
             }else if(res["status"] === "friends"){
                 friends["confirmed"][friendToAdd] = res["friendID"];
-            }else if(res["status"] === "unavailable"){
+            }
+            renderPopup();
+            
+            if(res["status"] === "unavailable"){
                 document.getElementById("friend_not_exist_notification").innerHTML = "<b>"+friendToAdd+"</b> could not be found.";
             }
-            console.log("ADDED FRIEND")
-            console.dir(friends)
-            renderPopup();
         })
     }
 
@@ -106,19 +107,12 @@ function start(myID, username){
         console.log("GOT MY FRIEND OBJ");
         console.dir(response);
         friends = JSON.parse(response);
-        // confirmed = Object.keys(friends["confirmed"]);
-        // pending = friends["pending"];
-        // console.log(confirmed);
-        // console.log(pending);
         renderPopup();
     });
-    // renderPopup();
+
+
      
 }
-
-
-
-
 
 
 
@@ -187,25 +181,48 @@ function letSelectUsername(myID){
 
 // previously getID()
 function init(){
-    checkForValue('friendCastID', function(ID){
-        var myID;
-        if(!ID){
-            myID = guid();
-            chrome.storage.local.set({'friendCastID': myID});
-        }else{
-            myID = ID;
-        }
-        checkForValue('friendCastUsername', function(uname){
-            if(!uname){
-                letSelectUsername(myID);
-            }else if(uname){
-                username = uname;
-                start(myID, uname);
+
+    function testRequest() {   
+        console.log(chrome.tabs);
+        // for(var i = 0; i < chrome.tabs.length; i++){
+        //     chrome.tabs[i](null, function(tab) {
+        //         chrome.tabs.sendMessage(tab.id, {greeting: "hello"});
+        //     });  
+
+        // }     
+
+        chrome.tabs.getAllInWindow(null, function(tabs){
+            for (var i = 0; i < tabs.length; i++) {
+            chrome.tabs.sendMessage(tabs[i].id, {greeting: "hello"});                         
             }
         });
+        // chrome.tabs.getSelected(null, function(tab) {
+        //     chrome.tabs.sendMessage(tab.id, {greeting: "hello"});
+        // });    
+    }
+    document.getElementById("test").addEventListener('click', testRequest);
 
 
-    });
+
+    // checkForValue('friendCastID', function(ID){
+    //     var myID;
+    //     if(!ID){
+    //         myID = guid();
+    //         chrome.storage.local.set({'friendCastID': myID});
+    //     }else{
+    //         myID = ID;
+    //     }
+    //     checkForValue('friendCastUsername', function(uname){
+    //         if(!uname){
+    //             letSelectUsername(myID);
+    //         }else if(uname){
+    //             username = uname;
+    //             start(myID, uname);
+    //         }
+    //     });
+
+
+    // });
 }
 
 window.addEventListener("load", init);
