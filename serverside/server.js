@@ -40,6 +40,10 @@ app.post('/hello', function (req, res) {
         console.log("USERS\n\t", users);
     }
     console.log("HELLO\n\tID", id, "\n\tUN", uname);
+    var reply = {"pending": users[id]["friends"]["pending"]}
+    
+    console.log("reply\n\t", util.inspect(reply, false, null))
+    
     res.end(JSON.stringify(users[id]["friends"]));
     
 });
