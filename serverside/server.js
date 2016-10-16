@@ -44,7 +44,10 @@ app.post('/hello', function (req, res) {
 
     var reply = {"pending": users[id]["friends"]["pending"]}
     var confirmed = Object.keys(users[id]["friends"]["confirmed"]);
-    reply["confirmed"] = confirmed;
+    reply["confirmed"] = {};
+    for(var i = 0; i < confirmed.length; i++){
+        reply["confirmed"][confirmed[i]] = IDfromUname(confirmed[i]);
+    }
 
     console.log("reply\n\t", util.inspect(reply, false, null));
     
