@@ -1,6 +1,6 @@
 function start(myID, username){
 
-    var friends = {"pending": []; "confirmed": {}};
+    var friends = {"pending": [], "confirmed": {}};
     // var confirmed = [];
     // var pending = [];
 
