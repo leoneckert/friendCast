@@ -97,7 +97,7 @@ function start(myID, username){
     toServer("hello", {}, function(response){
         console.log(response);
         var friends = JSON.parse(response);
-        confirmed = friends["confirmed"];
+        confirmed = Object.keys(friends["confirmed"]);
         pending = friends["pending"];
         console.log(confirmed);
         console.log(pending);

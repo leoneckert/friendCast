@@ -54,7 +54,7 @@ app.post('/hello', function (req, res) {
     console.log("reply\n\t", util.inspect(reply, false, null));
     
 
-    res.end(JSON.stringify(users[id]["friends"]));
+    res.end(JSON.stringify(reply));
     
 });
 
