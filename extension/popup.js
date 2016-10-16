@@ -1,7 +1,8 @@
 function start(myID, username){
 
-    var confirmed = [];
-    var pending = [];
+    var friends = {"pending": []; "confirmed": {}};
+    // var confirmed = [];
+    // var pending = [];
 
     function toServer(postkey, data, callback){   
         var xmlhttp = new XMLHttpRequest();       
@@ -21,11 +22,15 @@ function start(myID, username){
         var friendToAdd = document.getElementById("friendText").value;
         console.log(username,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
-            if(response === "pending"){
-                pending.push(friendToAdd);
-            }else if(response === "friends"){
-                confirmed.push(friendToAdd);
+            var res = JSON.parse(response);
+            if(res["status"] === "pending"){
+                friends["pending"].push(friendToAdd);
+            }else if(res["status"] === "friends"){
+                friends["pending"]["confirmed"][friendToAdd] = res["friendID"];
+                // confirmed.push(friendToAdd);
             }
+            console.log("ADDED FRIEND")
+            console.dir(friends)
             renderPopup();
         })
     }
@@ -42,6 +47,7 @@ function start(myID, username){
         var friendsWrapper = document.createElement("div");
         friendsWrapper.id = "friendsWrapper";
 
+        var confirmed = Object.keys(friends["confirmed"]);
         if(confirmed.length > 0){
             var confirmedFriends = document.createElement("div");
             confirmedFriends.id = "confirmedFriends";
@@ -52,6 +58,7 @@ function start(myID, username){
             friendsWrapper.appendChild(confirmedFriends);
         }
 
+        var pending = friends["pending"];
         if(pending.length > 0){
             var pendingFriends = document.createElement("div");
             pendingFriends.id = "pendingFriends";
@@ -95,12 +102,13 @@ function start(myID, username){
     // At this point, both ID and username are available, 
     // and a request function created to authenticate to the server.
     toServer("hello", {}, function(response){
-        console.log(response);
-        var friends = JSON.parse(response);
-        confirmed = Object.keys(friends["confirmed"]);
-        pending = friends["pending"];
-        console.log(confirmed);
-        console.log(pending);
+        console.log("GOT MY FRIEND OBJ");
+        console.dir(response);
+        friends = JSON.parse(response);
+        // confirmed = Object.keys(friends["confirmed"]);
+        // pending = friends["pending"];
+        // console.log(confirmed);
+        // console.log(pending);
         renderPopup();
     });
     // renderPopup();
