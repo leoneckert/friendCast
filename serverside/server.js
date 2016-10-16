@@ -140,7 +140,7 @@ app.post('/addfriend', function (req, res) {
             users[ID]["friends"]["confirmed"].push(req_friend);
             users[IDfromUname(req_friend)]["friends"]["confirmed"].push(uname);
             deleteFromPending(req_friend, uname);
-            var reply = {"status": "friends"; "friendID": IDfromUname(req_friend)};
+            var reply = {"status": "friends", "friendID": IDfromUname(req_friend)};
             res.end(JSON.stringify(reply));
         }else{
             users[ID]["friends"]["pending"].push(req_friend);
