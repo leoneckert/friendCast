@@ -1,3 +1,6 @@
+const util = require('util')
+
+
 var express = require('express');
 var app = express();
 
@@ -28,40 +31,109 @@ app.post('/hello', function (req, res) {
     var id = req.body.id;
     var uname = req.body.username;
     if(!users[id]){
-       users[id] = {}
-       users[id]["username"] = uname;
-       console.log("USERS\n\t", users);
+        users[id] = {}
+        users[id]["username"] = uname;
+        users[id]["friends"] = {};
+        users[id]["friends"]["pending"] = [];
+        users[id]["friends"]["confirmed"] = [];
+
+        console.log("USERS\n\t", users);
     }
     console.log("HELLO\n\tID", id, "\n\tUN", uname);
-    res.end("hello from server");
+    res.end(JSON.stringify(users[id]["friends"]));
     
 });
 
 
 function unameAvailable(uname){
     if(uname.indexOf(' ') != -1) return false; //checks for spaces
-    var usernames = {};
     var allIDs = Object.keys(users);
     for(var i = 0; i < allIDs.length; i++){
         var takenName = users[allIDs[i]]["username"];
-        if(uname === takenName){
-           return false; 
-        }
+        if(uname === takenName) return false; 
     }
-    return true;
-    
+    return true;  
 }
-
 app.post('/unameRequest', function (req, res) {
     var req_uname = req.body.unameRequested;
-    // console.log("\trequested name:", req_uname);
-    // console.log("\tavailable:", unameAvailable(req_uname));
-    console.log("REQUEST: username\n\tUN", req_uname, "\n\tavailable:", unameAvailable(req_uname));
+    console.log("REQUEST: username\n\tUN", req_uname, "\n\tavailable", unameAvailable(req_uname));
     if(unameAvailable(req_uname)){
         res.end("available");
     }else{
         res.end("unavailable");
     }
-    res.end("bla");
 });
 
+function IDfromUname(uname){
+    var allIDs = Object.keys(users);
+    for(var i = 0; i < allIDs.length; i++){
+        var un = users[allIDs[i]]["username"];
+        if(un === uname) return allIDs[i];
+    }
+}
+
+function areFriends(uname1, uname2){
+    var IDuname1 = IDfromUname(uname1);
+    var allFriendsOfUname1 = users[IDuname1]["friends"]["confirmed"];
+    for(var i = 0; i < allFriendsOfUname1.length; i++){
+        if(allFriendsOfUname1[i] === uname2) return true;
+    } 
+    return false;
+}
+function alreadyPending(uname1, possiblyPending){
+    var IDuname1 = IDfromUname(uname1);
+    var pendingFriendsOfUname1 = users[IDuname1]["friends"]["pending"];
+    for(var i = 0; i < pendingFriendsOfUname1.length; i++){
+        if(pendingFriendsOfUname1[i] === possiblyPending) return true;
+    } 
+    return false;
+}
+
+function possibleFriend(uname, friendName){
+    if(uname === friendName) return false;
+    if(alreadyPending(uname, friendName)) return false;
+    var allIDs = Object.keys(users);
+    for(var i = 0; i < allIDs.length; i++){
+        var takenName = users[allIDs[i]]["username"];
+        if(friendName === takenName){
+            if(areFriends(uname, friendName)) return false;
+            return true; 
+        }
+    }
+    return false;  
+}
+
+function deleteFromPending(uname, toDelete){
+    var pending = users[IDfromUname(uname)]["friends"]["pending"];
+    var index = pending.indexOf(toDelete);
+    if (index > -1) {
+        pending.splice(index, 1);
+    }
+
+}
+
+
+app.post('/addfriend', function (req, res) {
+    var ID = req.body.id;
+    var uname = req.body.username;
+    var req_friend = req.body.data.name;
+    console.log("REQUEST: friend\n\tUN", uname, "\n\ttoAdd", req_friend, "\n\texists", possibleFriend(uname,req_friend));
+    if(possibleFriend(uname,req_friend)){
+        
+        if(alreadyPending(req_friend,uname)){
+            // if the other person already added uname, then we declare 
+            // them friends and delete uname out of reqfriends pending
+            users[ID]["friends"]["confirmed"].push(req_friend);
+            users[IDfromUname(req_friend)]["friends"]["confirmed"].push(uname);
+            deleteFromPending(req_friend, uname);
+            res.end("friends");
+        }else{
+            users[ID]["friends"]["pending"].push(req_friend);
+            res.end("pending");
+        }
+        
+    }else{
+        res.end("unavailable");
+    }
+    console.log("USERS\n\t", util.inspect(users, false, null))
+});
