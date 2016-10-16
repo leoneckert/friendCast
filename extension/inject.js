@@ -4,15 +4,6 @@ function init(){
 
     console.log("injected");
 
-    // chrome.storage.local.get("username", function (items){
-    //     if(items["username"] == null){ 
-    //         console.log("NO USERNAME");
-    //         myID 
-    //     }else if(items["username"]){ 
-    //         console.log("USERNAME", items["username"]);
-    //     }
-    // }); 
-
 
     var askID = setInterval(function(){ 
         chrome.storage.local.get("friendCastID", function (items){
@@ -24,7 +15,7 @@ function init(){
                 clearInterval(askID);
             }
         }); 
-    }, 100);
+    }, 4000);
 
 
 
