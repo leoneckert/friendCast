@@ -3,8 +3,8 @@ var fs = require('fs'); // Using the filesystem module
 var url =  require('url');
 
 var options = {
-  key: fs.readFileSync('my-key.pem'),
-  cert: fs.readFileSync('my-cert.pem')
+  key: fs.readFileSync('__my-key.pem'),
+  cert: fs.readFileSync('__my-cert.pem')
 };
 
 

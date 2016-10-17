@@ -35,96 +35,161 @@ function init(){
     }
 
     
+    function sendToBackground(message, callback){
+        chrome.runtime.sendMessage(message, function(res){
+            if(callback){
+                callback(res);
+            }
+        });
+    }
+
+    // if https, say hello to background.js
+    if(isHTTPS(window.location.origin)){
+
+        sendToBackground( {"type": "iAmHTTPS"} , function(myPeerID){
+            console.log(myPeerID);
+            var peerID = myPeerID["peerID"];
+            var muted = myPeerID["muted"];
+            console.log("muted", muted);
+
+
+            replaceLargestImg(function(originalImg, replaceWrapper, c_width, c_height){
+                alert("GOT THE IMAGE");
+                
+
+                var peer = new Peer(peerID, {host: 'liveweb.itp.io', port: 9000, path: '/'});
+                console.log("connected", peerID);
+
+                peer.on('error', function(err) {
+                    console.log(err);
+                });
+
+                peer.on('call', function(incoming_call) {
+                    console.log("Got a call!");
+                    console.log(incoming_call);
+                    
+                    incoming_call.answer(); // Answer the call with our stream from getUserMedia
+                    
+                    incoming_call.on('stream', function(remoteStream) {  // we receive a getUserMedia stream from the remote caller
+                        
+                        // And attach it to a video object
+                        var ovideoElement = document.createElement("video");
+
+                        // document.getElementById('othervideo');
+                        ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
+                        ovideoElement.setAttribute("autoplay", "true"); 
+                        ovideoElement.muted = muted;     
+                        ovideoElement.play();
+                                        
+
+                        originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
+                        replaceWrapper.appendChild(ovideoElement);
+                                                        
+                        
+
+                    });
+                });
+            });
+
+
+
+
+        });
+
+
+
+    }
+
 
 
     
-    var askID = setInterval(function(){ 
-        chrome.storage.local.get("friendCastID", function (items){
-            if(items["friendCastID"] == null){ 
-                console.log("no id found"); 
-            }else if(items["friendCastID"]){ 
-                console.log("USERNAME", items["friendCastID"]);
-                myID = items["friendCastID"];
-                clearInterval(askID);
+    // var askID = setInterval(function(){ 
+    //     chrome.storage.local.get("friendCastID", function (items){
+    //         if(items["friendCastID"] == null){ 
+    //             console.log("no id found"); 
+    //         }else if(items["friendCastID"]){ 
+    //             console.log("USERNAME", items["friendCastID"]);
+    //             myID = items["friendCastID"];
+    //             clearInterval(askID);
 
-                replaceLargestImg(function(originalImg, replaceWrapper, c_width, c_height){
-                    alert("GOT THE IMAGE");
+    //             replaceLargestImg(function(originalImg, replaceWrapper, c_width, c_height){
+    //                 alert("GOT THE IMAGE");
 
-                    // chrome.runtime.onMessage.addListener(
-                    //     function(request, sender, sendResponse) {
-                    //         console.log(sender);
-                    //         console.log(request);
+    //                 // chrome.runtime.onMessage.addListener(
+    //                 //     function(request, sender, sendResponse) {
+    //                 //         console.log(sender);
+    //                 //         console.log(request);
 
-                    //         if(request.type === "stream"){
-                    //             console.log("it's astream!");
+    //                 //         if(request.type === "stream"){
+    //                 //             console.log("it's astream!");
 
-                    //             // And attach it to a video object
-                    //             var ovideoElement = document.createElement("video");
+    //                 //             // And attach it to a video object
+    //                 //             var ovideoElement = document.createElement("video");
 
-                    //             // document.getElementById('othervideo');
-                    //             // ovideoElement.src = request.streamSource
-                    //             ovideoElement.src = window.URL.createObjectURL(request.stream) || request.stream;
-                    //             ovideoElement.setAttribute("autoplay", "true");     
-                    //             ovideoElement.play();
+    //                 //             // document.getElementById('othervideo');
+    //                 //             // ovideoElement.src = request.streamSource
+    //                 //             ovideoElement.src = window.URL.createObjectURL(request.stream) || request.stream;
+    //                 //             ovideoElement.setAttribute("autoplay", "true");     
+    //                 //             ovideoElement.play();
 
-                    //             originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
-                    //             replaceWrapper.appendChild(ovideoElement);
-                    //         }
-                    //     }
-                    // );
+    //                 //             originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
+    //                 //             replaceWrapper.appendChild(ovideoElement);
+    //                 //         }
+    //                 //     }
+    //                 // );
 
                     
                 
 
 
-                    if(isHTTPS(window.location.origin)){
+    //                 if(isHTTPS(window.location.origin)){
 
-                        alert("THIS IS HTTPS!");
+    //                     alert("THIS IS HTTPS!");
                         
-                        var peer = new Peer(myID, {host: 'liveweb.itp.io', port: 9000, path: '/'});
+    //                     var peer = new Peer(myID, {host: 'liveweb.itp.io', port: 9000, path: '/'});
 
-                        peer.on('error', function(err) {
-                            console.log(err);
-                        });
+    //                     peer.on('error', function(err) {
+    //                         console.log(err);
+    //                     });
 
-                        peer.on('call', function(incoming_call) {
-                            console.log("Got a call!");
-                            console.log(incoming_call);
+    //                     peer.on('call', function(incoming_call) {
+    //                         console.log("Got a call!");
+    //                         console.log(incoming_call);
                             
-                            incoming_call.answer(); // Answer the call with our stream from getUserMedia
+    //                         incoming_call.answer(); // Answer the call with our stream from getUserMedia
                             
-                            incoming_call.on('stream', function(remoteStream) {  // we receive a getUserMedia stream from the remote caller
+    //                         incoming_call.on('stream', function(remoteStream) {  // we receive a getUserMedia stream from the remote caller
                                 
 
-                                // var theSource = window.URL.createObjectURL(remoteStream) || remoteStream;
-                                // chrome.runtime.sendMessage({"type": "stream", info: incoming_call.peer, "streamSource": theSource, "stream": remoteStream});
+    //                             // var theSource = window.URL.createObjectURL(remoteStream) || remoteStream;
+    //                             // chrome.runtime.sendMessage({"type": "stream", info: incoming_call.peer, "streamSource": theSource, "stream": remoteStream});
 
 
                                 
-                                // And attach it to a video object
-                                var ovideoElement = document.createElement("video");
+    //                             // And attach it to a video object
+    //                             var ovideoElement = document.createElement("video");
 
-                                // document.getElementById('othervideo');
-                                ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
-                                ovideoElement.setAttribute("autoplay", "true");     
-                                ovideoElement.play();
+    //                             // document.getElementById('othervideo');
+    //                             ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
+    //                             ovideoElement.setAttribute("autoplay", "true");     
+    //                             ovideoElement.play();
                                                 
 
-                                originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
-                                replaceWrapper.appendChild(ovideoElement);
+    //                             originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
+    //                             replaceWrapper.appendChild(ovideoElement);
                                                                 
                                 
 
-                            });
-                        });
+    //                         });
+    //                     });
                       
 
-                    }
+    //                 }
 
-                });
-            }
-        }); 
-    }, 4000);
+    //             });
+    //         }
+    //     }); 
+    // }, 4000);
 
 
 }

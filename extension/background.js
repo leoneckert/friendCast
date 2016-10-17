@@ -11,51 +11,82 @@ var askID = setInterval(function(){
             clearInterval(askID);
 
 
+            var currentTabs = {};
 
             chrome.extension.onMessage.addListener(
                 function(request, sender, sendResponse) {
                     // console.log(sender);
-                    console.log(request);
+                    // console.log(request);
+                    
+                    if(request.type == "iAmHTTPS"){
+                        console.log("new https site registered");
+                        console.log(request);
+                        console.log(sender);
 
-                    if(request.type === "stream"){
-                        console.log("it's astream!");
-                        sendToAllTabs(request);
+
+
+                        var tabsPeerID = myID+"-"+String(sender.tab.id);
+
+                        if(!currentTabs[sender.tab.id]){
+                            var muted = null;
+                            if(Object.keys(currentTabs).length === 0){
+                                muted = false;
+                            }else{
+                                muted = true;
+                            }
+
+                            currentTabs[sender.tab.id] = {};
+                            currentTabs[sender.tab.id]["data"] = sender.tab
+              
+                            currentTabs[sender.tab.id]["muted"] = muted;
+                          
+                        }
+                        console.dir(currentTabs);
+
+
+
+                        sendResponse({"peerID": tabsPeerID, "muted": currentTabs[sender.tab.id]["muted"]});
+
+
+
                     }
+
+
                 }
             );
 
 
             
 
-            var currentTabs = {};
+            // var currentTabs = {};
 
 
-            function sendToAllTabs(message){
-                tabIDs = Object.keys(currentTabs);
+            // function sendToAllTabs(message){
+            //     tabIDs = Object.keys(currentTabs);
 
-                console.log(tabIDs);
-                for(var i = 0; i < tabIDs.length; i++){
-                    chrome.tabs.sendMessage(currentTabs[tabIDs[i]]["data"].id, message);
-                }  
-            }
+            //     console.log(tabIDs);
+            //     for(var i = 0; i < tabIDs.length; i++){
+            //         chrome.tabs.sendMessage(currentTabs[tabIDs[i]]["data"].id, message);
+            //     }  
+            // }
 
 
-            function initCurrentTabs(){
-                chrome.windows.getAll(function(win){
-                    for(var i = 0; i < win.length; i++){
-                        chrome.tabs.getAllInWindow(win[i].id, function(tabs){
-                            for(var j = 0; j < tabs.length; j++){
-                                currentTabs[tabs[j].id] = {};
-                                currentTabs[tabs[j].id]["data"] = tabs[j]
-                            }
-                        })
-                    }
-                });
+            // function initCurrentTabs(){
+            //     chrome.windows.getAll(function(win){
+            //         for(var i = 0; i < win.length; i++){
+            //             chrome.tabs.getAllInWindow(win[i].id, function(tabs){
+            //                 for(var j = 0; j < tabs.length; j++){
+            //                     currentTabs[tabs[j].id] = {};
+            //                     currentTabs[tabs[j].id]["data"] = tabs[j]
+            //                 }
+            //             })
+            //         }
+            //     });
 
-                console.dir(currentTabs)
-            }
+            //     console.dir(currentTabs)
+            // }
 
-            initCurrentTabs();
+            // initCurrentTabs();
 
 
             
