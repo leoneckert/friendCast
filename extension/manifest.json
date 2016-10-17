@@ -18,6 +18,9 @@
           "js": ["peer.js", "inject.js"]
         }
   ],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "web_accessible_resources": [
       "manifest.json"
   ]

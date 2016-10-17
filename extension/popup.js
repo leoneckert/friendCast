@@ -1,8 +1,6 @@
 function start(myID, username){
 
     var friends = {"pending": [], "confirmed": {}};
-    // var confirmed = [];
-    // var pending = [];
 
     function toServer(postkey, data, callback){   
         var xmlhttp = new XMLHttpRequest();       
@@ -37,17 +35,9 @@ function start(myID, username){
         })
     }
 
-    function sendStream(uname) {   
-        chrome.tabs.getAllInWindow(null, function(tabs){
-            for (var i = 0; i < tabs.length; i++) {
-            chrome.tabs.sendMessage(tabs[i].id, {uname: "hello", id: });                         
-            }
-        });  
+    function sendStream(recipient) {   
+        chrome.runtime.sendMessage({"myID": myID, "nameToCall": recipient, "idToCall": friends["confirmed"][recipient]});
     }
-    // document.getElementById("test").addEventListener('click', testRequest);
-
-
-
 
     function renderPopup(){
         document.body.innerHTML = "";
@@ -66,11 +56,26 @@ function start(myID, username){
             var confirmedFriends = document.createElement("div");
             confirmedFriends.id = "confirmedFriends";
             confirmedFriends.innerHTML = "<p><b>Your friends:</b></p>";
+            
             for(var i = 0; i < confirmed.length; i++){
-                confirmedFriends.innerHTML += "<p> >> "+confirmed[i]+" <a href='#' onCLick=\"alert('Hello!')\"">go live</a></p> ";
+                
+                var friendListing = document.createElement("p");
+                friendListing.innerHTML = ">> "+confirmed[i]+" ";
+
+                var callButton = document.createElement("a");
+                callButton.innerHTML = "go live";
+                callButton.href = "#";
+                callButton.id = confirmed[i];
+                callButton.addEventListener('click', function(){
+                    sendStream(this.id);
+                })
+
+                friendListing.appendChild(callButton);
+                confirmedFriends.appendChild(friendListing);
             }
             friendsWrapper.appendChild(confirmedFriends);
         }
+
 
         var pending = friends["pending"];
         if(pending.length > 0){
@@ -108,6 +113,7 @@ function start(myID, username){
         friendNotExistNotification.id = "friend_not_exist_notification";
         newFriendsWrapper.appendChild(friendNotExistNotification);
         document.body.appendChild(newFriendsWrapper);
+
 
     }
 
