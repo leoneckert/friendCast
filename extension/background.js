@@ -1,11 +1,10 @@
 
-
 var askID = setInterval(function(){ 
     chrome.storage.local.get("friendCastID", function (items){
         if(items["friendCastID"] == null){ 
             console.log("no id found"); 
         }else if(items["friendCastID"]){ 
-            console.log("USERNAME", items["friendCastID"]);
+            console.log("ID", items["friendCastID"]);
             myID = items["friendCastID"];
 
             clearInterval(askID);
@@ -15,18 +14,9 @@ var askID = setInterval(function(){
 
             chrome.extension.onMessage.addListener(
                 function(request, sender, sendResponse) {
-                    // console.log(sender);
-                    // console.log(request);
-                    
+
                     if(request.type == "iAmHTTPS"){
-                        console.log("new https site registered");
-                        console.log(request);
-                        console.log(sender);
-
-
-
                         var tabsPeerID = myID+"-"+String(sender.tab.id);
-
                         if(!currentTabs[sender.tab.id]){
                             var muted = null;
                             if(Object.keys(currentTabs).length === 0){
@@ -34,24 +24,13 @@ var askID = setInterval(function(){
                             }else{
                                 muted = true;
                             }
-
                             currentTabs[sender.tab.id] = {};
                             currentTabs[sender.tab.id]["data"] = sender.tab
-              
                             currentTabs[sender.tab.id]["muted"] = muted;
-                          
                         }
                         console.dir(currentTabs);
-
-
-
                         sendResponse({"peerID": tabsPeerID, "muted": currentTabs[sender.tab.id]["muted"]});
-
-
-
                     }
-
-
                 }
             );
 
