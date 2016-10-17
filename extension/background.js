@@ -1,5 +1,3 @@
-
-
 var askID = setInterval(function(){ 
     chrome.storage.local.get("friendCastID", function (items){
         if(items["friendCastID"] == null){ 
@@ -57,9 +55,7 @@ var askID = setInterval(function(){
 
             initCurrentTabs();
 
-
-            
-
+ 
             // chrome.tabs.getAllInWindow(integer windowId, function callback)
 
             // chrome.tabs.onUpdated.addListener(function callback)
@@ -67,9 +63,6 @@ var askID = setInterval(function(){
             // chrome.tabs.onCreated.addListener(function callback)
 
             // chrome.tabs.onRemoved.addListener(function callback)
-
-
-        
 
         }
     }); 
