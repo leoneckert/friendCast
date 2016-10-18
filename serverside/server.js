@@ -86,7 +86,7 @@ function IDfromUname(uname){
 
 function areFriends(FCusername, uname2){
     var IDuname1 = IDfromUname(FCusername);
-    var allFriendsOfUname1 = Object.keys(users[IDuname1]["friends"]["confirmed"]);
+    var allFriendsOfUname1 = Object.keys(users[IDuname1]["FCfriends"]["confirmed"]);
     for(var i = 0; i < allFriendsOfUname1.length; i++){
         if(allFriendsOfUname1[i] === uname2) return true;
     } 
@@ -94,7 +94,7 @@ function areFriends(FCusername, uname2){
 }
 function alreadyPending(FCusername, possiblyPending){
     var IDuname1 = IDfromUname(FCusername);
-    var pendingFriendsOfUname1 = users[IDuname1]["friends"]["pending"];
+    var pendingFriendsOfUname1 = users[IDuname1]["FCfriends"]["pending"];
     for(var i = 0; i < pendingFriendsOfUname1.length; i++){
         if(pendingFriendsOfUname1[i] === possiblyPending) return true;
     } 
@@ -106,7 +106,7 @@ function possibleFriend(FCusername, friendName){
     if(alreadyPending(FCusername, friendName)) return false;
     var allIDs = Object.keys(users);
     for(var i = 0; i < allIDs.length; i++){
-        var takenName = users[allIDs[i]]["username"];
+        var takenName = users[allIDs[i]]["FCusername"];
         if(friendName === takenName){
             if(areFriends(FCusername, friendName)) return false;
             return true; 
@@ -116,7 +116,7 @@ function possibleFriend(FCusername, friendName){
 }
 
 function deleteFromPending(uname, toDelete){
-    var pending = users[IDfromUname(uname)]["friends"]["pending"];
+    var pending = users[IDfromUname(uname)]["FCfriends"]["pending"];
     var index = pending.indexOf(toDelete);
     if (index > -1) {
         pending.splice(index, 1);
