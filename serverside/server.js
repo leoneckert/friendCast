@@ -25,15 +25,30 @@ app.listen(8000);
 
 var users = {}
 
+function authenticated(FCsecretID, FCpeerID, FCusername){
+    if(!users[FCsecretID]){
+        return false;
+    }else if(users[FCsecretID]["FCusername"] != FCusername){
+        return false;
+    }else if(users[FCsecretID]["FCpeerID"] != FCpeerID){
+        return false;
+    }
+    return true;
+    
+
+}
+
 // POST method route
 app.post('/hello', function (req, res) {
     var FCsecretID = req.body.FCsecretID;
     var FCpeerID = req.body.FCpeerID;
     var FCusername = req.body.FCusername;
 
-    if(users[FCsecretID] && users[FCsecretID]["FCusername"] != FCusername){
-        console.log("[-] not autheticated user.");
-        res.end("DONT KNOW YOU");
+    if(users[FCsecretID]){
+        if(!authenticated(FCsecretID, FCpeerID, FCusername){
+            res.end("IDONT KNOW YOU");
+        }
+
     }else if(!users[FCsecretID]){
         users[FCsecretID] = {}
         users[FCsecretID]["FCusername"] = FCusername;
@@ -128,6 +143,9 @@ app.post('/addfriend', function (req, res) {
     var FCsecretID = req.body.FCsecretID;
     var FCpeerID = req.body.FCpeerID;
     var FCusername = req.body.FCusername;
+    if(!authenticated(FCsecretID, FCpeerID, FCusername){
+        res.end("IDONT KNOW YOU");
+    }
 
 
     // var ID = req.body.id;

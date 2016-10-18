@@ -19,7 +19,7 @@
         }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "page": "background.html"
   },
   "web_accessible_resources": [
       "manifest.json"
