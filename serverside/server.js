@@ -58,9 +58,10 @@ app.post('/hello', function (req, res) {
     
 
     var reply = {"friends": {
-        "pending": users[FCsecretID]["FCfriends"]["pending"],
-        "confirmed": users[FCsecretID]["FCfriends"]["confirmed"]
-    };
+            "pending": users[FCsecretID]["FCfriends"]["pending"],
+            "confirmed": users[FCsecretID]["FCfriends"]["confirmed"]
+        }
+    }
 
 
     // var confirmed = users[id]["friends"]["confirmed"];
