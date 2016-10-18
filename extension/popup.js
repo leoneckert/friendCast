@@ -52,7 +52,7 @@ function start(FCsecretID, FCpeerID, FCusername){
     }
 
     function sendStream(recipient) {   
-        chrome.runtime.sendMessage({"myID": myID, "nameToCall": recipient, "idToCall": friends["confirmed"][recipient]});
+        chrome.runtime.sendMessage({header: "call", "nameToCall": recipient});
     }
 
     function renderPopup(){
@@ -141,6 +141,7 @@ function start(FCsecretID, FCpeerID, FCusername){
         // console.log("GOT MY FRIEND OBJ");
         console.dir(response);
         FCfriends = JSON.parse(response);
+        sendToBackground({header: "friendUpdate", friends: FCfriends});
         console.dir(FCfriends);
         renderPopup();
     });

@@ -1,11 +1,13 @@
 function runBackground(FCsecretID, FCpeerID, FCusername){
     console.log("in runBackground with FCsecretID, FCpeerID, FCusername", FCsecretID, FCpeerID, FCusername);
 
+
     var FCfriends = {};
     var currentlyCalling = [];
     var currentTabs = {};
     var extensions = [];
 
+    var sendExtensionCountdown = false;
 
     function toServer(postkey, data, callback){   
         var xmlhttp = new XMLHttpRequest();       
@@ -20,8 +22,8 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
         xmlhttp.send(JSON.stringify(toSend));
     }
 
-    function updateFCfriends(){
-        toServer("updateFriends", {}, function(response){
+    function updateExtensionsThereAndFCfriendsHere(){
+        toServer("updateFriends", {"extensions": extensions}, function(response){
             var res = JSON.parse(response);
             if(res["status"] === "success"){
                FCfriends = res["FCfriends"];
@@ -32,12 +34,19 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
     }
 
     var updateFCfriendsRegularly = setInterval(function(){ 
-        updateFCfriends();
+        updateExtensionsThereAndFCfriendsHere();
     }, 300000);
 
 
     function sendExtensionsToServer(){
-        toServer("extensions", {"extensions": extensions});
+        //only sending Extensions every 5 seconds max
+        if(!sendExtensionCountdown){
+            sendExtensionCountdown = true;
+            setTimeout(function(){ 
+                toServer("extensions", {"extensions": extensions});
+                sendExtensionCountdown = false;
+            }, 5000);
+        }
     }
 
     function addExtension(toAdd, callback){
@@ -96,6 +105,9 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                     sendExtensionsToServer();
                 });
 
+            }else if(request.header == "call"){
+                    
+                
             }
         }
     );

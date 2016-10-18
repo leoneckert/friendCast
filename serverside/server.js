@@ -173,6 +173,9 @@ app.post('/updateFriends', function (req, res) {
     if(!authenticated(FCsecretID, FCpeerID, FCusername)){
         res.end("IDONT KNOW YOU");
     }
+    users[FCsecretID]["FCfriends"]["FCextensions"] = req.body.data.extensions;
+    console.log("TABS", FCusername, "\n\t", users[FCsecretID]["FCfriends"]["FCextensions"].length);
+    
     console.log("UPDATING BACKGROUND PAGE\n\t", util.inspect(users[FCsecretID]["FCfriends"], false, null));
     res.end(JSON.stringify({"status": "success", "FCfriends": users[FCsecretID]["FCfriends"]}));
 
