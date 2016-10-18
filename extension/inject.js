@@ -50,7 +50,7 @@ function init(){
                         ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
                         ovideoElement.setAttribute("autoplay", "true"); 
                         ovideoElement.id = "friendCastVideo"
-                        ovideoElement.muted = muted;     
+                        // ovideoElement.muted = muted;     
                         ovideoElement.play();
                                         
 
