@@ -40,6 +40,11 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
             console.log(request);
             console.log(sender);
             // console.log(request);
+            if(request.header == "friendUpdate"){
+                FCfriends = request.friends;
+                console.log("updated FCfriends");
+                console.dir(FCfriends);
+            }
 
 
             // if(request.type == "iAmHTTPS"){
