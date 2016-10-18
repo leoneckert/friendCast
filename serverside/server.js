@@ -31,9 +31,9 @@ app.post('/hello', function (req, res) {
     var FCpeerID = req.body.FCpeerID
     var FCusername = req.body.FCusername
 
-    console.log("FCsecretID", FCsecretID);
-    console.log("FCpeerID", FCpeerID);
-    console.log("FCusername", FCusername);
+    // console.log("FCsecretID", FCsecretID);
+    // console.log("FCpeerID", FCpeerID);
+    // console.log("FCusername", FCusername);
 
     if(users[FCsecretID] && users[FCsecretID]["FCusername"] != FCusername){
         console.log("[-] not autheticated user.");
