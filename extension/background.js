@@ -58,7 +58,7 @@ var askID = setInterval(function(){
             );
 
             function sendExtensionsToServer(){
-                toServer("extensions", {"data": extensions});
+                toServer("extensions", {"extensions": extensions});
             }
 
             function addExtension(toAdd){
