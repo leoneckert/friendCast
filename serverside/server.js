@@ -143,7 +143,7 @@ app.post('/addfriend', function (req, res) {
     var FCsecretID = req.body.FCsecretID;
     var FCpeerID = req.body.FCpeerID;
     var FCusername = req.body.FCusername;
-    if(!authenticated(FCsecretID, FCpeerID, FCusername){
+    if(!authenticated(FCsecretID, FCpeerID, FCusername)){
         res.end("IDONT KNOW YOU");
     }
 
