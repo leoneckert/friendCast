@@ -181,33 +181,34 @@ app.post('/updateFriends', function (req, res) {
 
 
 
-// app.post('/extensions', function (req, res) {
-//     var ID = req.body.id;
-//     var extensions = req.body.data.extensions;
-//     console.log("EXTENSIONS");
-//     console.log(ID);
-//     console.log(extensions);
-//     // var req_friend = req.body.data.name;
-//     // console.log("REQUEST: friend\n\tUN", uname, "\n\ttoAdd", req_friend, "\n\texists", possibleFriend(uname,req_friend));
-//     // if(possibleFriend(uname,req_friend)){
+app.post('/extensions', function (req, res) {
+    console.log(req.body);
+    // var ID = req.body.id;
+    // var extensions = req.body.data.extensions;
+    // console.log("EXTENSIONS");
+    // console.log(ID);
+    // console.log(extensions);
+    // // var req_friend = req.body.data.name;
+    // // console.log("REQUEST: friend\n\tUN", uname, "\n\ttoAdd", req_friend, "\n\texists", possibleFriend(uname,req_friend));
+    // // if(possibleFriend(uname,req_friend)){
         
-//     //     if(alreadyPending(req_friend,uname)){
-//     //         // if the other person already added uname, then we declare 
-//     //         // them friends and delete uname out of reqfriends pending
-//     //         users[ID]["friends"]["confirmed"].push(req_friend);
-//     //         users[FCsecretIDfromUname(req_friend)]["friends"]["confirmed"].push(uname);
-//     //         deleteFromPending(req_friend, uname);
-//     //         var reply = {"status": "friends", "friendID": FCsecretIDfromUname(req_friend)};
-//     //         res.end(JSON.stringify(reply));
-//     //     }else{
-//     //         users[ID]["friends"]["pending"].push(req_friend);
-//     //         var reply = {"status": "pending"};
-//     //         res.end(JSON.stringify(reply));
-//     //     }
+    // //     if(alreadyPending(req_friend,uname)){
+    // //         // if the other person already added uname, then we declare 
+    // //         // them friends and delete uname out of reqfriends pending
+    // //         users[ID]["friends"]["confirmed"].push(req_friend);
+    // //         users[FCsecretIDfromUname(req_friend)]["friends"]["confirmed"].push(uname);
+    // //         deleteFromPending(req_friend, uname);
+    // //         var reply = {"status": "friends", "friendID": FCsecretIDfromUname(req_friend)};
+    // //         res.end(JSON.stringify(reply));
+    // //     }else{
+    // //         users[ID]["friends"]["pending"].push(req_friend);
+    // //         var reply = {"status": "pending"};
+    // //         res.end(JSON.stringify(reply));
+    // //     }
         
-//     // }else{
-//     //     var reply = {"status": "unavailable"};
-//     //     res.end(JSON.stringify(reply));
-//     // }
-//     // console.log("USERS\n\t", util.inspect(users, false, null))
-// });
+    // // }else{
+    // //     var reply = {"status": "unavailable"};
+    // //     res.end(JSON.stringify(reply));
+    // // }
+    // // console.log("USERS\n\t", util.inspect(users, false, null))
+});
