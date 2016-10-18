@@ -23,7 +23,7 @@ function start(FCsecretID, FCpeerID, FCusername){
     function addFriend(){
         document.getElementById("friend_not_exist_notification").innerHTML = "";
         var friendToAdd = document.getElementById("friendText").value;
-        console.log(username,"wants to add", friendToAdd,"as a friend.");
+        console.log(FCusername,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
             var res = JSON.parse(response);
             
@@ -49,14 +49,14 @@ function start(FCsecretID, FCpeerID, FCusername){
         
         // include welcome
         var welcome = document.createElement("h3");
-        welcome.innerHTML = "Hello, " + username + "!";
+        welcome.innerHTML = "Hello, " + FCusername + "!";
         document.body.appendChild(welcome);
 
         //friends
         var friendsWrapper = document.createElement("div");
         friendsWrapper.id = "friendsWrapper";
 
-        var confirmed = Object.keys(friends["confirmed"]);
+        var confirmed = Object.keys(FCfriends["confirmed"]);
         if(confirmed.length > 0){
             var confirmedFriends = document.createElement("div");
             confirmedFriends.id = "confirmedFriends";
@@ -82,7 +82,7 @@ function start(FCsecretID, FCpeerID, FCusername){
         }
 
 
-        var pending = friends["pending"];
+        var pending = FCfriends["pending"];
         if(pending.length > 0){
             var pendingFriends = document.createElement("div");
             pendingFriends.id = "pendingFriends";
