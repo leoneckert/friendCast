@@ -79,7 +79,7 @@ app.post('/unameRequest', function (req, res) {
 function IDfromUname(uname){
     var allIDs = Object.keys(users);
     for(var i = 0; i < allIDs.length; i++){
-        var un = users[allIDs[i]]["username"];
+        var un = users[allIDs[i]]["FCusername"];
         if(un === uname) return allIDs[i];
     }
 }
