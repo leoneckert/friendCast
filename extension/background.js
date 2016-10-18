@@ -48,9 +48,12 @@ var askID = setInterval(function(){
                         currentTabs[tabID] = {};
                         currentTabs[tabID]["data"] = sender.tab;
                         currentTabs[tabID]["muted"] = muted;
+                        addExtension(tabID)
                         
                         console.dir(currentTabs);
                         sendResponse({"peerID": tabsPeerID, "muted": currentTabs[tabID]["muted"]});
+
+
 
 
                     }
@@ -120,7 +123,7 @@ var askID = setInterval(function(){
 
             //refresh is handled,
             //update only needs to take place when video dissappears...
-            chrome.tabs.onUpdated.addListener(
+            // chrome.tabs.onUpdated.addListener(
                 // function(idOfTab, changeInfo, tab){
 
                 //     console.log("updated tab");
@@ -132,7 +135,7 @@ var askID = setInterval(function(){
                 //         console.log("UURL CHANGED!!!")
                 //     }
                 // }
-            );
+            // );
 
             
             
