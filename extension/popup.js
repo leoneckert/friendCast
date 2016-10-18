@@ -27,11 +27,13 @@ function start(FCsecretID, FCpeerID, FCusername){
         toServer("addfriend", {"name": friendToAdd}, function(response){
             var res = JSON.parse(response);
             
-            if(res["status"] === "pending"){
-                friends["pending"].push(friendToAdd);
-            }else if(res["status"] === "friends"){
-                friends["confirmed"][friendToAdd] = res["friendID"];
+            if(res["status"] === "success"){
+                console.dir(response);
+                FCfriends = JSON.parse(response)["FCfriends"];
+                console.dir(FCfriends);
             }
+            
+
             renderPopup();
             
             if(res["status"] === "unavailable"){
