@@ -10,7 +10,7 @@ function start(FCsecretID, FCpeerID, FCusername){
     function toServer(postkey, data, callback){   
         var xmlhttp = new XMLHttpRequest();       
         xmlhttp.open("POST", "http://104.236.30.108:8000/"+postkey, true);
-        var toSend = {"id":myID, "username": username, "data":data};
+        var toSend = {"FCsecretID":FCsecretID, "FCpeerID": FCpeerID, "FCusername": FCusername, "data":data};
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.onreadystatechange = function() {//Call a function when the state changes.
             if(xmlhttp.readyState == 4 && xmlhttp.status == 200 && callback) {

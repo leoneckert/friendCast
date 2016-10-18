@@ -1,6 +1,5 @@
 const util = require('util')
 
-
 var express = require('express');
 var app = express();
 
@@ -10,51 +9,59 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-function respondToClient(request, response){
-    console.log(request);
-    console.log(request.connection.remoteAddress);
-    console.log(request.path);
-    response.end("Hello, client!");
-}
+// function respondToClient(request, response){
+//     console.log(request);
+//     console.log(request.connection.remoteAddress);
+//     console.log(request.path);
+//     response.end("Hello, client!");
+// }
 
 
 app.listen(8000);
 
 
-app.get('/*', respondToClient);
+// app.get('/*', respondToClient);
 
 
 var users = {}
 
 // POST method route
 app.post('/hello', function (req, res) {
-    var id = req.body.id;
-    var uname = req.body.username;
-    if(!users[id]){
-        users[id] = {}
-        users[id]["username"] = uname;
-        users[id]["friends"] = {};
-        users[id]["friends"]["pending"] = [];
-        users[id]["friends"]["confirmed"] = [];
+    var FCsecretID = req.body.FCsecretID
+    var FCpeerID = req.body.FCpeerID
+    var FCusername = req.body.FCusername
 
-        console.log("USERS\n\t", users);
-    }
-    console.log("HELLO\n\tID", id, "\n\tUN", uname);
+    console.log("FCsecretID", FCsecretID);
+    console.log("FCpeerID", FCpeerID);
+    console.log("FCusername", FCusername);
+
+    // var id = req.body.id;
+    // var uname = req.body.username;
+    // if(!users[id]){
+    //     users[id] = {}
+    //     users[id]["username"] = uname;
+    //     users[id]["friends"] = {};
+    //     users[id]["friends"]["pending"] = [];
+    //     users[id]["friends"]["confirmed"] = [];
+
+    //     console.log("USERS\n\t", users);
+    // }
+    // console.log("HELLO\n\tID", id, "\n\tUN", uname);
     
 
-    var reply = {"pending": users[id]["friends"]["pending"]}
-    var confirmed = users[id]["friends"]["confirmed"];
-    console.log(confirmed);
-    reply["confirmed"] = {};
-    for(var i = 0; i < confirmed.length; i++){
-        console.log(confirmed[i]);
-        reply["confirmed"][confirmed[i]] = IDfromUname(confirmed[i]);
-    }
+    // var reply = {"pending": users[id]["friends"]["pending"]}
+    // var confirmed = users[id]["friends"]["confirmed"];
+    // console.log(confirmed);
+    // reply["confirmed"] = {};
+    // for(var i = 0; i < confirmed.length; i++){
+    //     console.log(confirmed[i]);
+    //     reply["confirmed"][confirmed[i]] = IDfromUname(confirmed[i]);
+    // }
 
-    console.log("reply\n\t", util.inspect(reply, false, null));
+    // console.log("reply\n\t", util.inspect(reply, false, null));
     
 
-    res.end(JSON.stringify(reply));
+    // res.end(JSON.stringify(reply));
     
 });
 
