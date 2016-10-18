@@ -55,18 +55,21 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
 
     }
 
-    function deleteExtension(toDelete){
+    function deleteExtension(toDelete, callback){
         var index = extensions.indexOf(toDelete);
         if (index > -1) {
             extensions.splice(index, 1);
         }
+        callback();
     }
 
-    function deleteTab(id){
-        console.log("deleting tab", id);
+    function deleteTab(tabID){
+        console.log("deleting tab", tabID);
         delete currentTabs[tabID];
-        deleteExtension(tabID);
-        sendExtensionsToServer();
+        deleteExtension(tabID, function(){
+            sendExtensionsToServer();
+        });
+       
     } 
 
     chrome.extension.onMessage.addListener(
@@ -84,10 +87,11 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 var tabId = sender.tab.id;
 
                 if (currentTabs[tabName]) {
-                    deleteTab(tabID);
+                    deleteTab(tabName);
                 }
                 currentTabs[tabName] = {};
                 currentTabs[tabName]["data"] = sender.tab;
+                currentTabs[tabName]["id"] = tabId;
                 addExtension(tabName, function(){
                     sendExtensionsToServer();
                 });
@@ -97,8 +101,8 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
     );
 
     chrome.tabs.onRemoved.addListener(
-        function(idOfTab, removeInfo){    
-            deleteTab(idOfTab);
+        function(idOfTab, removeInfo){
+            deleteTab(String(idOfTab));
         }
     );
 

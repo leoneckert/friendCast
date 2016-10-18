@@ -189,7 +189,7 @@ app.post('/extensions', function (req, res) {
         res.end("IDONT KNOW YOU");
     }
     users[FCsecretID]["FCfriends"]["FCextensions"] = req.body.data.extensions;
-    console.log("TABS", FCusername, "\n\t", util.inspect(users[FCsecretID]["FCfriends"]["FCextensions"], false, null));
+    console.log("TABS", FCusername, "\n\t", users[FCsecretID]["FCfriends"]["FCextensions"].length);
 
 
 
