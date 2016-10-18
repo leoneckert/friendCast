@@ -153,8 +153,7 @@ app.post('/addfriend', function (req, res) {
 
             deleteFromPending(req_friend, FCusername);
         }else{
-            users[ID]["friends"]["pending"].push(req_friend);
-
+            users[FCsecretID]["FCfriends"]["pending"].push(req_friend);
         }
 
         console.log("reply\n\t", util.inspect(users[FCsecretID]["FCfriends"], false, null));
