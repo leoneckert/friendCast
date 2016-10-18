@@ -57,11 +57,7 @@ app.post('/hello', function (req, res) {
     console.log("HELLO\n\tFCsecretID", FCsecretID, "\n\tFCpeerID", FCpeerID, "\n\tFCusername", FCusername);
     
 
-    var reply = {"friends": {
-            "pending": users[FCsecretID]["FCfriends"]["pending"],
-            "confirmed": users[FCsecretID]["FCfriends"]["confirmed"]
-        }
-    }
+    var reply = users[FCsecretID]["FCfriends"]
 
 
     // var confirmed = users[id]["friends"]["confirmed"];
