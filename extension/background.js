@@ -95,7 +95,7 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
         function(request, sender, sendResponse) {
             console.log(request);
             console.log(sender);
-            // console.log(request);
+
             if(request.header == "friendUpdate"){
                 FCfriends = request.friends;
                 console.log("updated FCfriends");
