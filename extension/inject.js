@@ -43,6 +43,9 @@ function init(){
         });
     }
 
+
+
+
     // if https, say hello to background.js
     if(isHTTPS(window.location.origin)){
 
@@ -51,6 +54,7 @@ function init(){
             var peerID = myPeerID["peerID"];
             var muted = myPeerID["muted"];
             console.log("muted", muted);
+
 
 
             replaceLargestImg(function(originalImg, replaceWrapper, c_width, c_height){
@@ -78,6 +82,7 @@ function init(){
                         // document.getElementById('othervideo');
                         ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
                         ovideoElement.setAttribute("autoplay", "true"); 
+                        ovideoElement.id = "friendCastVideo"
                         ovideoElement.muted = muted;     
                         ovideoElement.play();
                                         
@@ -85,10 +90,23 @@ function init(){
                         originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
                         replaceWrapper.appendChild(ovideoElement);
                                                         
-                        
-
+                    
                     });
                 });
+
+                chrome.runtime.onMessage.addListener(
+                    function(request, sender, sendResponse) {
+                        console.log(sender);
+                        console.log(request);
+
+                        if(request["message"] == "unmute"){
+                            console.log("unmuting!");
+                            document.getElementById("friendCastVideo").muted = false;
+                        }
+                    }
+                );
+
+
             });
 
 
