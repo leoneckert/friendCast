@@ -74,6 +74,7 @@ var askID = setInterval(function(){
                 if(!exists){
                     console.log("Adding extension:", toAdd);
                     extensions.push(String(toAdd));
+                    sendExtensionsToServer();
                 }
             }
             function deleteExtension(toDelete){
