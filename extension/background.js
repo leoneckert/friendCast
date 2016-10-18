@@ -17,11 +17,11 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
         xmlhttp.send(JSON.stringify(toSend));
     }
 
-    // function updateFCfriends(){
-    //     toServer("updateFriends", {}, function(reponse){
-    //         console.log()
-    //     });
-    // }
+    function updateFCfriends(){
+        toServer("updateFriends", {}, function(reponse){
+            console.log()
+        });
+    }
 
 
 
