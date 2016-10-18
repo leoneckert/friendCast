@@ -32,33 +32,32 @@ function init(){
                     }
                 }
 
-                // peer.on('error', function(err) {
-                //     console.log(err);
-                // });
+                peer.on('error', function(err) {
+                    console.log(err);
+                });
 
-                // peer.on('call', function(incoming_call) {
-                //     console.log("Got a call!");
-                //     console.log(incoming_call);
+                peer.on('call', function(incoming_call) {
+                    console.log("Got a call!");
+                    console.log(incoming_call);
                     
-                //     incoming_call.answer(); // Answer the call with our stream from getUserMedia
+                    incoming_call.answer(); // Answer the call with our stream from getUserMedia
                     
-                //     incoming_call.on('stream', function(remoteStream) {  // we receive a getUserMedia stream from the remote caller
+                    incoming_call.on('stream', function(remoteStream) {  // we receive a getUserMedia stream from the remote caller
                         
-                //         // And attach it to a video object
-                //         var ovideoElement = document.createElement("video");
-
-                //         // document.getElementById('othervideo');
-                //         ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
-                //         ovideoElement.setAttribute("autoplay", "true"); 
-                //         ovideoElement.id = "friendCastVideo"
-                //         ovideoElement.muted = muted;     
-                //         ovideoElement.play();
+                        // And attach it to a video object
+                        var ovideoElement = document.createElement("video");
+                        // document.getElementById('othervideo');
+                        ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
+                        ovideoElement.setAttribute("autoplay", "true"); 
+                        ovideoElement.id = "friendCastVideo"
+                        ovideoElement.muted = muted;     
+                        ovideoElement.play();
                                         
 
-                //         originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
-                //         replaceWrapper.appendChild(ovideoElement);
-                //     });
-                // });
+                        originalImg.parentNode.replaceChild(replaceWrapper, originalImg);
+                        replaceWrapper.appendChild(ovideoElement);
+                    });
+                });
 
                 chrome.runtime.onMessage.addListener(
                     function(request, sender, sendResponse) {
@@ -75,6 +74,8 @@ function init(){
                                 var allExtensions = request.data[peopleToCall[i]]["FCextensions"];
                                 for (var j = 0; j < allExtensions.length; j++){
                                     console.log(peerIDbase+"-"+allExtensions[j]);
+                                    var number = peerIDbase+"-"+allExtensions[j];
+                                    makeCall(number);
                                 }
 
                             }
