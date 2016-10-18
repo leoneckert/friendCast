@@ -72,6 +72,10 @@ function init(){
                                 console.log("Calling", peopleToCall[i]);
                                 var peerIDbase = request.data[peopleToCall[i]]["FCpeerID"];
                                 console.log("peerIDbase", peerIDbase);
+                                var allExtensions = request.data[peopleToCall[i]]["FCextensions"];
+                                for (var j = 0; j < allExtensions.length; j++){
+                                    console.log(peerIDbase+"-"+allExtensions[j]);
+                                }
 
                             }
 
