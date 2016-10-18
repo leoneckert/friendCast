@@ -182,7 +182,18 @@ app.post('/updateFriends', function (req, res) {
 
 
 app.post('/extensions', function (req, res) {
-    console.log(req.body);
+    var FCsecretID = req.body.FCsecretID;
+    var FCpeerID = req.body.FCpeerID;
+    var FCusername = req.body.FCusername;
+    if(!authenticated(FCsecretID, FCpeerID, FCusername)){
+        res.end("IDONT KNOW YOU");
+    }
+    users[FCsecretID]["FCfriends"]["FCextensions"] = req.body.data.extensions;
+    console.log("USERS\n\t", util.inspect(users, false, null));
+
+
+
+
     // var ID = req.body.id;
     // var extensions = req.body.data.extensions;
     // console.log("EXTENSIONS");

@@ -3,7 +3,7 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
 
     var FCfriends = {};
     var currentlyCalling = [];
-    var activeTabs = {};
+    var currentTabs = {};
     var extensions = [];
 
 
