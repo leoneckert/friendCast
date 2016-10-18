@@ -2,6 +2,7 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
     console.log("in runBackground with FCsecretID, FCpeerID, FCusername", FCsecretID, FCpeerID, FCusername);
 
     var FCfriends = {};
+    var currentlyCalling = [];
 
 
     function toServer(postkey, data, callback){   
@@ -18,11 +19,52 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
     }
 
     function updateFCfriends(){
-        toServer("updateFriends", {}, function(reponse){
-            console.log()
+        toServer("updateFriends", {}, function(response){
+            var res = JSON.parse(response);
+            if(res["status"] === "success"){
+               FCfriends = res["FCfriends"];
+               console.log("updated FCfriends");
+               console.dir(FCfriends); 
+            }
         });
     }
 
+    var updateFCfriendsRegularly = setInterval(function(){ 
+        updateFCfriends();
+    }, 300000);
+
+
+    
+    chrome.extension.onMessage.addListener(
+        function(request, sender, sendResponse) {
+            console.log(request);
+            console.log(sender);
+            // console.log(request);
+
+
+            // if(request.type == "iAmHTTPS"){
+            //     var tabID = String(sender.tab.id);
+            //     console.log("a https");
+            //     var tabsPeerID = myID+"-"+String(sender.tab.id);
+            //     if (currentTabs[sender.tab.id]) {
+            //         deleteTab(tabID);
+            //     }
+
+            //     var muted = null;
+            //     if(Object.keys(currentTabs).length === 0) muted = false;
+            //     else muted = true;
+                
+            //     console.log("construcintg tab id");
+            //     currentTabs[tabID] = {};
+            //     currentTabs[tabID]["data"] = sender.tab;
+            //     currentTabs[tabID]["muted"] = muted;
+            //     // addExtension(tabID)
+                
+            //     console.dir(currentTabs);
+            //     sendResponse({"peerID": tabsPeerID, "muted": currentTabs[tabID]["muted"]});
+            // }
+        }
+    );
 
 
 

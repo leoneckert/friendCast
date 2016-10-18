@@ -20,6 +20,14 @@ function start(FCsecretID, FCpeerID, FCusername){
         xmlhttp.send(JSON.stringify(toSend));
     }
 
+    function sendToBackground(message, callback){
+        chrome.runtime.sendMessage(message, function(res){
+            if(callback){
+                callback(res);
+            }
+        });
+    }
+
     function addFriend(){
         document.getElementById("friend_not_exist_notification").innerHTML = "";
         var friendToAdd = document.getElementById("friendText").value;
@@ -30,12 +38,13 @@ function start(FCsecretID, FCpeerID, FCusername){
             if(res["status"] === "success"){
                 console.dir(response);
                 FCfriends = JSON.parse(response)["FCfriends"];
+                sendToBackground({header: "friendUpdate", friends: FCfriends});
                 console.dir(FCfriends);
+
             }
             
 
             renderPopup();
-            
             if(res["status"] === "unavailable"){
                 document.getElementById("friend_not_exist_notification").innerHTML = "<b>"+friendToAdd+"</b> could not be found.";
             }

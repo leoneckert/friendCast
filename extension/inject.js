@@ -1,3 +1,40 @@
+function init(){
+    if(isHTTPS(window.location.origin)){
+
+        // sendToBackground( {header: "iAmHTTPS"} , function(response){
+        //     console.log(response);
+        //     // var peerID = myPeerID["peerID"];
+        //     // var muted = myPeerID["muted"];
+        //     // console.log("muted", muted);
+        // });
+
+
+
+
+    }
+}
+
+function sendToBackground(message, callback){
+    chrome.runtime.sendMessage(message, function(res){
+        if(callback){
+            callback(res);
+        }
+    });
+}
+
+
+function isHTTPS(string){
+    if (string.substring(0, 5) == "https") {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+window.addEventListener("load", init);
+
+
 // function init(){
 
 //     var myID = null;
