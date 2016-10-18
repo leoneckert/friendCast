@@ -1,12 +1,12 @@
 function init(){
     if(isHTTPS(window.location.origin)){
 
-        // sendToBackground( {header: "iAmHTTPS"} , function(response){
-        //     console.log(response);
-        //     // var peerID = myPeerID["peerID"];
-        //     // var muted = myPeerID["muted"];
-        //     // console.log("muted", muted);
-        // });
+        sendToBackground( {header: "iAmHTTPS"} , function(response){
+            console.log(response);
+            // var peerID = myPeerID["peerID"];
+            // var muted = myPeerID["muted"];
+            // console.log("muted", muted);
+        });
 
 
 

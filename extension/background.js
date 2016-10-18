@@ -3,6 +3,8 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
 
     var FCfriends = {};
     var currentlyCalling = [];
+    var activeTabs = {};
+    var extensions = [];
 
 
     function toServer(postkey, data, callback){   
@@ -34,7 +36,39 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
     }, 300000);
 
 
-    
+    function sendExtensionsToServer(){
+        toServer("extensions", {"extensions": extensions});
+    }
+
+    function addExtension(toAdd, callback){
+        var exists = false
+        for(var i = 0; i < extensions.length; i++){
+            if(extensions[i] == toAdd) exists = true;
+        }
+
+        if(!exists){
+            console.log("Adding extension:", toAdd);
+            extensions.push(String(toAdd));
+            // sendExtensionsToServer();
+        }
+        callback();
+
+    }
+
+    function deleteExtension(toDelete){
+        var index = extensions.indexOf(toDelete);
+        if (index > -1) {
+            extensions.splice(index, 1);
+        }
+    }
+
+    function deleteTab(id){
+        console.log("deleting tab", id);
+        var tabID = String(id);
+        delete currentTabs[tabID];
+        deleteExtension(tabID);
+    } 
+
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse) {
             console.log(request);
@@ -44,6 +78,22 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 FCfriends = request.friends;
                 console.log("updated FCfriends");
                 console.dir(FCfriends);
+            }else if(request.header == "iAmHTTPS"){
+                    
+                var tabName = String(sender.tab.id);
+                var tabId = sender.tab.id;
+
+                if (currentTabs[tabName]) {
+                    deleteTab(tabID);
+                }
+                currentTabs[tabName] = {};
+                currentTabs[tabName]["data"] = sender.tab;
+
+                // currentTabs[tabName]["muted"] = muted;
+                addExtension(tabName, function(){
+                    sendExtensionsToServer();
+                });
+
             }
 
 
