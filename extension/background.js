@@ -82,6 +82,15 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
        
     } 
 
+    function informCaller(){
+        var tabIDs = Object.keys(currentTabs);
+        for(var i = 0; i < tabIDs.length; i++){
+            if(currentTabs[tabIDs[i]]["caller"]){
+                chrome.tabs.sendMessage(currentTabs[tabIDs[i]]["id"], {"message": "currentCalls", "data": currentlyCalling});   
+            }
+        }
+    }
+
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse) {
             console.log(request);
@@ -99,12 +108,22 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 if (currentTabs[tabName]) {
                     deleteTab(tabName);
                 }
+
+                var caller = null;
+                if(Object.keys(currentTabs).length === 0) caller = true;
+                else caller = false;
+
                 currentTabs[tabName] = {};
                 currentTabs[tabName]["data"] = sender.tab;
                 currentTabs[tabName]["id"] = tabId;
+                currentTabs[tabName]["caller"] = caller;
+                currentTabs[tabName]["peerID"] = FCpeerID+"-"+tabName;
+
                 addExtension(tabName, function(){
                     sendExtensionsToServer();
                 });
+
+                sendResponse({"peerID": currentTabs[tabName]["peerID"], "caller": caller});
 
             }else if(request.header == "call"){
                 var recipient = request.nameToCall;
@@ -113,13 +132,17 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 }
                 updateExtensionsThereAndFCfriendsHere(function(){
                     currentlyCalling[recipient] = FCfriends["confirmed"][recipient];
-                })
-                
+                    informCaller();
+                });
+
+
+
+
                 console.dir("callling someone");
                 console.dir(currentlyCalling);
 
 
-                    
+             
             }
         }
     );
