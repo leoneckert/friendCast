@@ -45,7 +45,7 @@ app.post('/hello', function (req, res) {
     var FCusername = req.body.FCusername;
 
     if(users[FCsecretID]){
-        if(!authenticated(FCsecretID, FCpeerID, FCusername){
+        if(!authenticated(FCsecretID, FCpeerID, FCusername)){
             res.end("IDONT KNOW YOU");
         }
 
