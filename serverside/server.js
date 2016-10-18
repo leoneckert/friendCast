@@ -145,9 +145,9 @@ app.post('/addfriend', function (req, res) {
             users[FCsecretID]["FCfriends"]["confirmed"][req_friend]["FCextensions"] = users[FCsecretIDfromUname(req_friend)]["FCextensions"];;
 
             users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername] = {};
-            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCusername"] = users[FCusername]["FCusername"];
-            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCpeerID"] = users[FCusername]["FCpeerID"];
-            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCextensions"] = users[FCusername]["FCextensions"];
+            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCusername"] = users[FCsecretID]["FCusername"];
+            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCpeerID"] = users[FCsecretID]["FCpeerID"];
+            users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"][FCusername]["FCextensions"] = users[FCsecretID]["FCextensions"];
 
             // users[FCsecretIDfromUname(req_friend)]["FCfriends"]["confirmed"].push(FCusername);
 
