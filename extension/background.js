@@ -64,9 +64,9 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
 
     function deleteTab(id){
         console.log("deleting tab", id);
-        var tabID = String(id);
         delete currentTabs[tabID];
         deleteExtension(tabID);
+        sendExtensionsToServer();
     } 
 
     chrome.extension.onMessage.addListener(
@@ -88,39 +88,19 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 }
                 currentTabs[tabName] = {};
                 currentTabs[tabName]["data"] = sender.tab;
-
-                // currentTabs[tabName]["muted"] = muted;
                 addExtension(tabName, function(){
                     sendExtensionsToServer();
                 });
 
             }
-
-
-            // if(request.type == "iAmHTTPS"){
-            //     var tabID = String(sender.tab.id);
-            //     console.log("a https");
-            //     var tabsPeerID = myID+"-"+String(sender.tab.id);
-            //     if (currentTabs[sender.tab.id]) {
-            //         deleteTab(tabID);
-            //     }
-
-            //     var muted = null;
-            //     if(Object.keys(currentTabs).length === 0) muted = false;
-            //     else muted = true;
-                
-            //     console.log("construcintg tab id");
-            //     currentTabs[tabID] = {};
-            //     currentTabs[tabID]["data"] = sender.tab;
-            //     currentTabs[tabID]["muted"] = muted;
-            //     // addExtension(tabID)
-                
-            //     console.dir(currentTabs);
-            //     sendResponse({"peerID": tabsPeerID, "muted": currentTabs[tabID]["muted"]});
-            // }
         }
     );
 
+    chrome.tabs.onRemoved.addListener(
+        function(idOfTab, removeInfo){    
+            deleteTab(idOfTab);
+        }
+    );
 
 
 
