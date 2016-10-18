@@ -175,14 +175,19 @@ app.post('/updateFriends', function (req, res) {
     }
     users[FCsecretID]["FCfriends"]["FCextensions"] = req.body.data.extensions;
     console.log("TABS", FCusername, "\n\t", users[FCsecretID]["FCfriends"]["FCextensions"].length);
-    
+
     console.log("UPDATING BACKGROUND PAGE\n\t", util.inspect(users[FCsecretID]["FCfriends"], false, null));
     res.end(JSON.stringify({"status": "success", "FCfriends": users[FCsecretID]["FCfriends"]}));
 
 });
 
 
-
+function updateExtensionsForFriends(FCsecretID, FCpeerID, FCusername, extensions){
+    var friendsOfUserUsernames = Object.keys( users[FCsecretID]["FCfriends"]["confirmed"] );
+    for (var i = 0; i < friendsOfUserUsernames.length; i++){
+        users[FCsecretIDfromUname(friendsOfUserUsernames[i])]["FCfriends"]["confirmed"][FCusername]["FCextensions"] = extensions;
+    }
+}
 
 app.post('/extensions', function (req, res) {
     var FCsecretID = req.body.FCsecretID;
@@ -192,6 +197,7 @@ app.post('/extensions', function (req, res) {
         res.end("IDONT KNOW YOU");
     }
     users[FCsecretID]["FCfriends"]["FCextensions"] = req.body.data.extensions;
+    updateExtensionsForFriends(FCsecretID, FCpeerID, FCusername, req.body.data.extensions);
     console.log("TABS", FCusername, "\n\t", users[FCsecretID]["FCfriends"]["FCextensions"].length);
 
 

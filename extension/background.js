@@ -3,7 +3,7 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
 
 
     var FCfriends = {};
-    var currentlyCalling = [];
+    var currentlyCalling = {};
     var currentTabs = {};
     var extensions = [];
 
@@ -22,13 +22,14 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
         xmlhttp.send(JSON.stringify(toSend));
     }
 
-    function updateExtensionsThereAndFCfriendsHere(){
+    function updateExtensionsThereAndFCfriendsHere(callback){
         toServer("updateFriends", {"extensions": extensions}, function(response){
             var res = JSON.parse(response);
             if(res["status"] === "success"){
-               FCfriends = res["FCfriends"];
-               console.log("updated FCfriends");
-               console.dir(FCfriends); 
+                FCfriends = res["FCfriends"];
+                console.log("updated FCfriends");
+                console.dir(FCfriends); 
+                if(callback) callback();
             }
         });
     }
@@ -106,8 +107,19 @@ function runBackground(FCsecretID, FCpeerID, FCusername){
                 });
 
             }else if(request.header == "call"){
-                    
+                var recipient = request.nameToCall;
+                if(currentlyCalling[recipient]){
+                    delete currentlyCalling[recipient];
+                }
+                updateExtensionsThereAndFCfriendsHere(function(){
+                    currentlyCalling[recipient] = FCfriends["confirmed"][recipient];
+                })
                 
+                console.dir("callling someone");
+                console.dir(currentlyCalling);
+
+
+                    
             }
         }
     );
