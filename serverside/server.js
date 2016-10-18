@@ -35,21 +35,34 @@ app.post('/hello', function (req, res) {
     console.log("FCpeerID", FCpeerID);
     console.log("FCusername", FCusername);
 
-    // var id = req.body.id;
-    // var uname = req.body.username;
-    // if(!users[id]){
-    //     users[id] = {}
-    //     users[id]["username"] = uname;
-    //     users[id]["friends"] = {};
-    //     users[id]["friends"]["pending"] = [];
-    //     users[id]["friends"]["confirmed"] = [];
+    if(users[FCsecretID] && users[FCsecretID]["FCusername"] != FCusername){
+        console.log("[-] not autheticated user.");
+        res.end("DONT KNOW YOU");
+    }else if(!users[FCsecretID]){
+        users[FCsecretID] = {}
+        users[FCsecretID]["FCusername"] = FCusername;
+        users[FCsecretID]["FCsecretID"] = FCsecretID;
+        users[FCsecretID]["FCpeerID"] = FCpeerID;
 
-    //     console.log("USERS\n\t", users);
-    // }
-    // console.log("HELLO\n\tID", id, "\n\tUN", uname);
+        users[FCsecretID]["FCfriends"] = {};
+        users[FCsecretID]["FCfriends"]["pending"] = [];
+        users[FCsecretID]["FCfriends"]["confirmed"] = [];
+
+        users[FCsecretID]["FCextensions"] = [];
+
+        console.log("USERS\n\t", users);
+
+    }
+
+    console.log("HELLO\n\tFCsecretID", FCsecretID, "\n\tFCpeerID", FCpeerID, "\n\tFCusername", FCusername);
     
 
-    // var reply = {"pending": users[id]["friends"]["pending"]}
+    var reply = {"friends": {
+        "pending": users[FCsecretID]["FCfriends"]["pending"],
+        "confirmed": users[FCsecretID]["FCfriends"]["confirmed"]
+    }
+
+
     // var confirmed = users[id]["friends"]["confirmed"];
     // console.log(confirmed);
     // reply["confirmed"] = {};
@@ -58,10 +71,10 @@ app.post('/hello', function (req, res) {
     //     reply["confirmed"][confirmed[i]] = IDfromUname(confirmed[i]);
     // }
 
-    // console.log("reply\n\t", util.inspect(reply, false, null));
+    console.log("reply\n\t", util.inspect(reply, false, null));
     
 
-    // res.end(JSON.stringify(reply));
+    res.end(JSON.stringify(reply));
     
 });
 
