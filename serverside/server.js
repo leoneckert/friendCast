@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 
 app.listen(8000);
 
@@ -22,7 +22,7 @@ function authenticated(FCsecretID, FCpeerID, FCusername){
         return false;
     }
     return true;
-    
+
 }
 
 // POST method route
@@ -35,7 +35,6 @@ app.post('/hello', function (req, res) {
         if(!authenticated(FCsecretID, FCpeerID, FCusername)){
             res.end("IDONT KNOW YOU");
         }
-
     }else if(!users[FCsecretID]){
         users[FCsecretID] = {}
         users[FCsecretID]["FCusername"] = FCusername;
@@ -54,7 +53,7 @@ app.post('/hello', function (req, res) {
     console.log("HELLO\n\tFCsecretID", FCsecretID, "\n\tFCpeerID", FCpeerID, "\n\tFCusername", FCusername);
     var reply = users[FCsecretID]["FCfriends"];
     console.log("reply\n\t", util.inspect(reply, false, null));
-    
+
     res.end(JSON.stringify(reply));
 });
 
@@ -64,9 +63,9 @@ function unameAvailable(uname){
     var allIDs = Object.keys(users);
     for(var i = 0; i < allIDs.length; i++){
         var takenName = users[allIDs[i]]["username"];
-        if(uname === takenName) return false; 
+        if(uname === takenName) return false;
     }
-    return true;  
+    return true;
 }
 app.post('/unameRequest', function (req, res) {
     var req_uname = req.body.unameRequested;
@@ -91,7 +90,7 @@ function areFriends(FCusername, uname2){
     var allFriendsOfUname1 = Object.keys(users[IDuname1]["FCfriends"]["confirmed"]);
     for(var i = 0; i < allFriendsOfUname1.length; i++){
         if(allFriendsOfUname1[i] === uname2) return true;
-    } 
+    }
     return false;
 }
 function alreadyPending(FCusername, possiblyPending){
@@ -99,7 +98,7 @@ function alreadyPending(FCusername, possiblyPending){
     var pendingFriendsOfUname1 = users[IDuname1]["FCfriends"]["pending"];
     for(var i = 0; i < pendingFriendsOfUname1.length; i++){
         if(pendingFriendsOfUname1[i] === possiblyPending) return true;
-    } 
+    }
     return false;
 }
 
@@ -111,10 +110,10 @@ function possibleFriend(FCusername, friendName){
         var takenName = users[allIDs[i]]["FCusername"];
         if(friendName === takenName){
             if(areFriends(FCusername, friendName)) return false;
-            return true; 
+            return true;
         }
     }
-    return false;  
+    return false;
 }
 
 function deleteFromPending(uname, toDelete){
@@ -137,9 +136,9 @@ app.post('/addfriend', function (req, res) {
     var req_friend = req.body.data.name;
     console.log("REQUEST: friend\n\tFCusername", FCusername, "\n\ttoAdd", req_friend, "\n\texists", possibleFriend(FCusername,req_friend));
     if(possibleFriend(FCusername,req_friend)){
-        
+
         if(alreadyPending(req_friend,FCusername)){
-            // if the other person already added uname, then we declare 
+            // if the other person already added uname, then we declare
             // them friends and delete uname out of reqfriends pending
             users[FCsecretID]["FCfriends"]["confirmed"][req_friend] = {};
             users[FCsecretID]["FCfriends"]["confirmed"][req_friend]["FCusername"] = req_friend;
@@ -158,7 +157,7 @@ app.post('/addfriend', function (req, res) {
 
         console.log("reply\n\t", util.inspect(users[FCsecretID]["FCfriends"], false, null));
         res.end(JSON.stringify({"status": "success", "FCfriends": users[FCsecretID]["FCfriends"]}));
-        
+
     }else{
         var reply = {"status": "unavailable"};
         res.end(JSON.stringify(reply));
@@ -211,9 +210,9 @@ app.post('/extensions', function (req, res) {
     // // var req_friend = req.body.data.name;
     // // console.log("REQUEST: friend\n\tUN", uname, "\n\ttoAdd", req_friend, "\n\texists", possibleFriend(uname,req_friend));
     // // if(possibleFriend(uname,req_friend)){
-        
+
     // //     if(alreadyPending(req_friend,uname)){
-    // //         // if the other person already added uname, then we declare 
+    // //         // if the other person already added uname, then we declare
     // //         // them friends and delete uname out of reqfriends pending
     // //         users[ID]["friends"]["confirmed"].push(req_friend);
     // //         users[FCsecretIDfromUname(req_friend)]["friends"]["confirmed"].push(uname);
@@ -225,7 +224,7 @@ app.post('/extensions', function (req, res) {
     // //         var reply = {"status": "pending"};
     // //         res.end(JSON.stringify(reply));
     // //     }
-        
+
     // // }else{
     // //     var reply = {"status": "unavailable"};
     // //     res.end(JSON.stringify(reply));

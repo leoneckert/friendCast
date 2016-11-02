@@ -1,4 +1,3 @@
-
 // from here: http://stackoverflow.com/a/105074
 function guid() {
   function s4() {

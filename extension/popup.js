@@ -40,10 +40,7 @@ function start(FCsecretID, FCpeerID, FCusername){
                 FCfriends = JSON.parse(response)["FCfriends"];
                 sendToBackground({header: "friendUpdate", friends: FCfriends});
                 console.dir(FCfriends);
-
             }
-
-
             renderPopup();
             if(res["status"] === "unavailable"){
                 document.getElementById("friend_not_exist_notification").innerHTML = "<b>"+friendToAdd+"</b> could not be found.";
@@ -130,7 +127,29 @@ function start(FCsecretID, FCpeerID, FCusername){
         newFriendsWrapper.appendChild(friendNotExistNotification);
         document.body.appendChild(newFriendsWrapper);
 
+    }
 
+    function renderNotAvailable(){
+        document.body.innerHTML = "";
+        // include welcome
+        var welcome = document.createElement("h3");
+        welcome.innerHTML = "Hello, " + FCusername + "!";
+        // include not available message
+        var notAvailable = document.createElement("p");
+        notAvailable.innerHTML = "FriendCast only works on <b>https</b> pages.";
+        document.body.appendChild(welcome);
+        document.body.appendChild(notAvailable);
+    }
+
+    function isHTTPS(string){
+        if (string.substring(0, 5) == "https") return true;
+        else return false;
+    }
+    function currentTab(callback){
+        var query = { active: true, currentWindow: true };
+        chrome.tabs.query(query, function(tabs){
+            callback(String(tabs[0]["url"])); // also has methods like currentTab.id
+        });
     }
 
     /////////////////////////// RUTIME ///////////////////////////
@@ -143,9 +162,15 @@ function start(FCsecretID, FCpeerID, FCusername){
         FCfriends = JSON.parse(response);
         sendToBackground({header: "friendUpdate", friends: FCfriends});
         console.dir(FCfriends);
-        renderPopup();
+
+        currentTab(function(url){
+            if(isHTTPS(url)){
+                renderPopup();
+            }else{
+                renderNotAvailable();
+            }
+        });
+
     });
-
-
 
 }
