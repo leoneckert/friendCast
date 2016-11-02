@@ -1,11 +1,16 @@
-function start(myID, username){
+function start(FCsecretID, FCpeerID, FCusername){
 
-    var friends = {"pending": [], "confirmed": {}};
+    console.log("in popup.js");
+    console.log("FCsecretID", FCsecretID);
+    console.log("FCpeerID", FCpeerID);
+    console.log("FCusername", FCusername);
 
-    function toServer(postkey, data, callback){   
-        var xmlhttp = new XMLHttpRequest();       
+    var FCfriends = {"pending": [], "confirmed": {}};
+
+    function toServer(postkey, data, callback){
+        var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("POST", "http://104.236.30.108:8000/"+postkey, true);
-        var toSend = {"id":myID, "username": username, "data":data};
+        var toSend = {"FCsecretID":FCsecretID, "FCpeerID": FCpeerID, "FCusername": FCusername, "data":data};
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.onreadystatechange = function() {//Call a function when the state changes.
             if(xmlhttp.readyState == 4 && xmlhttp.status == 200 && callback) {
@@ -15,50 +20,61 @@ function start(myID, username){
         xmlhttp.send(JSON.stringify(toSend));
     }
 
+    function sendToBackground(message, callback){
+        chrome.runtime.sendMessage(message, function(res){
+            if(callback){
+                callback(res);
+            }
+        });
+    }
+
     function addFriend(){
         document.getElementById("friend_not_exist_notification").innerHTML = "";
         var friendToAdd = document.getElementById("friendText").value;
-        console.log(username,"wants to add", friendToAdd,"as a friend.");
+        console.log(FCusername,"wants to add", friendToAdd,"as a friend.");
         toServer("addfriend", {"name": friendToAdd}, function(response){
             var res = JSON.parse(response);
-            
-            if(res["status"] === "pending"){
-                friends["pending"].push(friendToAdd);
-            }else if(res["status"] === "friends"){
-                friends["confirmed"][friendToAdd] = res["friendID"];
+
+            if(res["status"] === "success"){
+                console.dir(response);
+                FCfriends = JSON.parse(response)["FCfriends"];
+                sendToBackground({header: "friendUpdate", friends: FCfriends});
+                console.dir(FCfriends);
+
             }
+
+
             renderPopup();
-            
             if(res["status"] === "unavailable"){
                 document.getElementById("friend_not_exist_notification").innerHTML = "<b>"+friendToAdd+"</b> could not be found.";
             }
         })
     }
 
-    function sendStream(recipient) {   
-        chrome.runtime.sendMessage({"myID": myID, "nameToCall": recipient, "idToCall": friends["confirmed"][recipient]});
+    function sendStream(recipient) {
+        chrome.runtime.sendMessage({header: "call", "nameToCall": recipient});
     }
 
     function renderPopup(){
         document.body.innerHTML = "";
-        
+
         // include welcome
         var welcome = document.createElement("h3");
-        welcome.innerHTML = "Hello, " + username + "!";
+        welcome.innerHTML = "Hello, " + FCusername + "!";
         document.body.appendChild(welcome);
 
         //friends
         var friendsWrapper = document.createElement("div");
         friendsWrapper.id = "friendsWrapper";
 
-        var confirmed = Object.keys(friends["confirmed"]);
+        var confirmed = Object.keys(FCfriends["confirmed"]);
         if(confirmed.length > 0){
             var confirmedFriends = document.createElement("div");
             confirmedFriends.id = "confirmedFriends";
             confirmedFriends.innerHTML = "<p><b>Your friends:</b></p>";
-            
+
             for(var i = 0; i < confirmed.length; i++){
-                
+
                 var friendListing = document.createElement("p");
                 friendListing.innerHTML = ">> "+confirmed[i]+" ";
 
@@ -77,7 +93,7 @@ function start(myID, username){
         }
 
 
-        var pending = friends["pending"];
+        var pending = FCfriends["pending"];
         if(pending.length > 0){
             var pendingFriends = document.createElement("div");
             pendingFriends.id = "pendingFriends";
@@ -101,14 +117,14 @@ function start(myID, username){
         friendText.value = "Add a friend.";
         friendText.id = "friendText";
         newFriendsWrapper.appendChild(friendText);
-        
+
         var friendSubmit = document.createElement("input");
         friendSubmit.type = "button";
         friendSubmit.value = "Add friend";
         friendSubmit.id = "friendSubmit";
         friendSubmit.addEventListener("click", addFriend);
         newFriendsWrapper.appendChild(friendSubmit);
-        
+
         var friendNotExistNotification = document.createElement("p");
         friendNotExistNotification.id = "friend_not_exist_notification";
         newFriendsWrapper.appendChild(friendNotExistNotification);
@@ -117,18 +133,19 @@ function start(myID, username){
 
     }
 
-
-
-
     /////////////////////////// RUTIME ///////////////////////////
 
-    // At this point, both ID and username are available, 
+    // At this point, both ID and username are available,
     // and a request function created to authenticate to the server.
     toServer("hello", {}, function(response){
-        console.log("GOT MY FRIEND OBJ");
+        // console.log("GOT MY FRIEND OBJ");
         console.dir(response);
-        friends = JSON.parse(response);
+        FCfriends = JSON.parse(response);
+        sendToBackground({header: "friendUpdate", friends: FCfriends});
+        console.dir(FCfriends);
         renderPopup();
     });
-         
+
+
+
 }

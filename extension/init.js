@@ -1,3 +1,4 @@
+
 // from here: http://stackoverflow.com/a/105074
 function guid() {
   function s4() {
@@ -11,16 +12,16 @@ function guid() {
 
 function checkForValue(value, callback){
     chrome.storage.local.get(value, function (items){
-        if(items[value] == null){ 
+        if(items[value] == null){
             callback(false);
-        }else if(items[value]){ 
+        }else if(items[value]){
             callback(items[value]);
         }
-    }); 
+    });
 }
 
-function unameAvailable(uname, callback){   
-    var xmlhttp = new XMLHttpRequest();       
+function unameAvailable(uname, callback){
+    var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", "http://104.236.30.108:8000/unameRequest", true);
     var toSend = {"unameRequested":uname};
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -40,19 +41,19 @@ function userNameUnavailable(uname){
     document.getElementById("uname_taken_notification").innerHTML = "Please try another username.<br>'<b>" + uname + "</b>' is either <b>taken</b> or contains <b>forbidden characters</b>.";
 }
 
-function letSelectUsername(myID){
-    console.log("in letSelectUsername");
+
+function letSelectUsername(FCsecretID, FCpeerID){
     var usernamewrapper = document.getElementById("usernameWrapper");
     usernamewrapper.style = "display:block";
     document.getElementById("usernameSubmit").addEventListener('click', function(){
         var nameChosen = document.getElementById("usernameText").value;
         unameAvailable(nameChosen, function(available){
             if(available){
-                console.log("username available for", myID);
-                chrome.storage.local.set({"friendCastUsername": nameChosen});
-                start(myID, nameChosen);
+                console.log("username available for", FCsecretID);
+                chrome.storage.local.set({"FCusername": nameChosen});
+                start(FCsecretID, FCpeerID, nameChosen);
             }else if (!available){
-                console.log("username NOT available for", myID);
+                console.log("username NOT available for", FCsecretID);
                 userNameUnavailable(nameChosen);
             }
         });
@@ -62,21 +63,33 @@ function letSelectUsername(myID){
 // previously getID()
 function init(){
 
-    checkForValue('friendCastID', function(ID){
-        var myID;
+
+    checkForValue('FCsecretID', function(ID){
+        var FCsecretID;
         if(!ID){
-            myID = guid();
-            chrome.storage.local.set({'friendCastID': myID});
+            FCsecretID = guid();
+            chrome.storage.local.set({'FCsecretID': FCsecretID});
         }else{
-            myID = ID;
+            FCsecretID = ID;
         }
-        checkForValue('friendCastUsername', function(uname){
-            if(!uname){
-                letSelectUsername(myID);
-            }else if(uname){
-                username = uname;
-                start(myID, uname);
+        checkForValue('FCpeerID', function(ID){
+            var FCpeerID;
+            if(!ID){
+                FCpeerID = guid();
+                chrome.storage.local.set({'FCpeerID': FCpeerID});
+            }else{
+                FCpeerID = ID;
             }
+            checkForValue('FCusername', function(uname){
+                var FCusername;
+                if(!uname){
+                    letSelectUsername(FCsecretID, FCpeerID);
+                }else if(uname){
+                    FCusername = uname;
+                    start(FCsecretID, FCpeerID, FCusername);
+                }
+            });
+
         });
 
 
